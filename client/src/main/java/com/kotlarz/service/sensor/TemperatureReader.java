@@ -19,17 +19,21 @@ public class TemperatureReader {
     }
 
     public List<TemperatureLog> readAll() {
-        return master.getDevices(TmpDS18B20DeviceType.FAMILY_CODE).stream()
-                .map(device -> (TemperatureSensor) device)
-                .map(sensor -> TemperatureLog.builder()
-                        .address(((W1Device) sensor).getId())
-                        .date(new Date())
-                        .value(sensor.getTemperature())
-                        .build())
-                .collect(Collectors.toList());
+        synchronized (master) {
+            return master.getDevices(TmpDS18B20DeviceType.FAMILY_CODE).stream()
+                    .map(device -> (TemperatureSensor) device)
+                    .map(sensor -> TemperatureLog.builder()
+                            .address(((W1Device) sensor).getId())
+                            .date(new Date())
+                            .value(sensor.getTemperature())
+                            .build())
+                    .collect(Collectors.toList());
+        }
     }
 
     public void refreshDevices() {
-        master.checkDeviceChanges();
+        synchronized (master) {
+            master.checkDeviceChanges();
+        }
     }
 }

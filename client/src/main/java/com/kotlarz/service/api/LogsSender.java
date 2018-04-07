@@ -11,6 +11,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 public class LogsSender {
     private CloseableHttpClient client;
@@ -25,24 +26,24 @@ public class LogsSender {
     }
 
     @SneakyThrows
-    public void send(TemperatureLog temperatureLog) {
+    public void send(List<TemperatureLog> temperatureLogs) {
         String baseUrl = buildBaseUrl();
-        HttpPost post = createPost(temperatureLog, baseUrl);
+        HttpPost post = createPost(temperatureLogs, baseUrl);
         client.execute(post);
     }
 
-    private HttpPost createPost(TemperatureLog temperatureLog, String baseUrl) throws UnsupportedEncodingException, JsonProcessingException {
+    private HttpPost createPost(List<TemperatureLog> temperatureLogs, String baseUrl) throws UnsupportedEncodingException, JsonProcessingException {
         HttpPost post = new HttpPost(baseUrl + "/temperatures");
-        post.setEntity(createEntity(temperatureLog));
+        post.setEntity(createEntity(temperatureLogs));
         post.setHeader("Content-type", "application/json");
         return post;
     }
 
-    private StringEntity createEntity(TemperatureLog temperatureLog) throws UnsupportedEncodingException, JsonProcessingException {
+    private StringEntity createEntity(List<TemperatureLog> temperatureLog) throws UnsupportedEncodingException, JsonProcessingException {
         return new StringEntity(mapper.writeValueAsString(temperatureLog));
     }
 
     private String buildBaseUrl() {
-        return "http://" + AppSettings.arguments.getIp() + ":" + AppSettings.arguments.getPort();
+        return "http://" + AppSettings.arguments.getHost() + ":" + AppSettings.arguments.getPort();
     }
 }

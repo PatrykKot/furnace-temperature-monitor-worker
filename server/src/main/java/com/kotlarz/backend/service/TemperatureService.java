@@ -7,6 +7,7 @@ import com.kotlarz.backend.persistance.TemperatureLogRepository;
 import com.kotlarz.backend.web.dto.NewTemperatureDto;
 import com.kotlarz.backend.web.dto.SensorWithLogsDto;
 import com.kotlarz.backend.web.dto.TemperatureLogDto;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 public class TemperatureService {
     @Autowired
@@ -30,6 +32,8 @@ public class TemperatureService {
 
     @Transactional
     public void report(NewTemperatureDto temperatureDto) {
+        log.info("Saving report " + temperatureDto);
+
         Sensor sensor = findSensor(temperatureDto);
         TemperatureLog temperatureLog = TemperatureLog.builder()
                 .date(temperatureDto.getDate())

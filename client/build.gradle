@@ -3,14 +3,20 @@ plugins {
     id 'java'
 }
 
-group 'com.kotlarz'
-version '1.0-SNAPSHOT'
-
 apply plugin: 'java'
 
 lombok {
     version = "1.16.20"
     sha256 = ""
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.kotlarz.application.Main"
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 sourceCompatibility = 1.8
