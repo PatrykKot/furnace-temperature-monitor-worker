@@ -10,4 +10,7 @@ import java.util.List;
 public interface TemperatureLogRepository extends JpaRepository<TemperatureLog, Long> {
     @Query("select u from TemperatureLog u where u.date > ?1")
     List<TemperatureLog> findLaterThan(Date date);
+
+    @Query("select u from TemperatureLog u where u.date <= ?1")
+    List<TemperatureLog> findEarlierThan(Date date);
 }
