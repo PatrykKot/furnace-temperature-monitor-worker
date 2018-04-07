@@ -1,7 +1,7 @@
 package com.kotlarz.application;
 
-import com.kotlarz.service.api.LogsSender;
 import com.kotlarz.service.dto.TemperatureLog;
+import com.kotlarz.service.sender.LogsSender;
 import com.kotlarz.service.sensor.TemperatureReader;
 
 import java.util.Arrays;

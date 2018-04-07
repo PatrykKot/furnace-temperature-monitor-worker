@@ -1,4 +1,4 @@
-package com.kotlarz.service.api;
+package com.kotlarz.service.sender;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +27,7 @@ public class LogsSender {
 
     @SneakyThrows
     public void send(List<TemperatureLog> temperatureLogs) {
+        System.out.println("Sending logs " + temperatureLogs);
         String baseUrl = buildBaseUrl();
         HttpPost post = createPost(temperatureLogs, baseUrl);
         client.execute(post);
