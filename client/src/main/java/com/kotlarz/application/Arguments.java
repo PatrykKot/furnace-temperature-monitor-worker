@@ -4,7 +4,7 @@ import com.beust.jcommander.Parameter;
 import lombok.Getter;
 
 @Getter
-class Arguments {
+public class Arguments {
     @Parameter(names = {"--ip"}, description = "Server ip address", required = true)
     private String ip;
 
