@@ -1,5 +1,6 @@
 package com.kotlarz.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,7 +23,8 @@ public class TemperatureLog {
     @Column(nullable = false)
     private Double value;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     @JoinColumn(name = "sensorid", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Sensor sensor;
 }
