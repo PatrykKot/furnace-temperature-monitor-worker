@@ -20,8 +20,11 @@ public class Application {
     }
 
     private static void cycle(LogsSender sender, TemperatureReader reader) {
+        // TODO
+
         try {
-            sender.send(Arrays.asList(TemperatureLog.mock()));
+            System.out.println("Reading mocked temperature");
+            sender.invoke(Arrays.asList(TemperatureLog.mock()));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

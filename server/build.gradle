@@ -24,6 +24,7 @@ lombok {
 }
 
 bootJar {
+
     baseName = 'furnace-temperature-monitor-server'
     version =  '0.1.0'
 }
