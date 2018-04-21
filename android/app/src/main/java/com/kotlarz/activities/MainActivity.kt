@@ -1,7 +1,8 @@
-package com.kotlarz.application
+package com.kotlarz.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.kotlarz.application.R
 
 class MainActivity : AppCompatActivity() {
 

@@ -27,29 +27,27 @@ public class TemperatureService {
 
     @Transactional
     public void report(List<NewTemperatureDto> temperatureDtos) {
-        temperatureDtos.forEach(this::report);
-    }
+        List<Sensor> sensors = temperatureDtos.stream()
+                .map(dto -> dto.getAddress())
+                .distinct()
+                .map(address -> sensorRepository.findByAddress(address).orElseGet(() -> Sensor.builder()
+                        .address(address)
+                        .build()))
+                .collect(Collectors.toList());
 
-    @Transactional
-    public void report(NewTemperatureDto temperatureDto) {
-        log.info("Saving report " + temperatureDto);
+        List<TemperatureLog> logs = temperatureDtos.stream()
+                .map(dto -> TemperatureLog.builder()
+                        .date(dto.getDate())
+                        .sensor(sensors.stream()
+                                .filter(sensor -> sensor.getAddress().equals(dto.getAddress()))
+                                .findFirst()
+                                .orElseThrow(RuntimeException::new))
+                        .value(dto.getValue())
+                        .build())
+                .collect(Collectors.toList());
 
-        Sensor sensor = findSensor(temperatureDto);
-        TemperatureLog temperatureLog = TemperatureLog.builder()
-                .date(temperatureDto.getDate())
-                .sensor(sensor)
-                .value(temperatureDto.getValue())
-                .build();
-
-        temperatureLogRepository.save(temperatureLog);
-    }
-
-    private Sensor findSensor(NewTemperatureDto temperatureDto) {
-        String address = temperatureDto.getAddress();
-
-        return sensorRepository.findByAddress(address).orElseGet(() -> Sensor.builder()
-                .address(temperatureDto.getAddress())
-                .build());
+        log.info("Saving " + logs.size() + " reports");
+        temperatureLogRepository.saveAll(logs);
     }
 
     @Transactional()
