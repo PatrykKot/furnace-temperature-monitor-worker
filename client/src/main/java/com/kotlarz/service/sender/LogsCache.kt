@@ -6,7 +6,6 @@ import org.dizitart.no2.objects.ObjectRepository
 
 class LogsCache {
     private val database = org.dizitart.kno2.nitrite {
-        path = "database.db"
         compress = true
     }
 
