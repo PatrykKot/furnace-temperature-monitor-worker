@@ -1,12 +1,14 @@
 package com.kotlarz.domain
 
-import io.realm.RealmObject
+import io.realm.RealmModel
 import io.realm.RealmResults
 import io.realm.annotations.LinkingObjects
 import io.realm.annotations.PrimaryKey
+import io.realm.annotations.RealmClass
 import java.util.*
 
-open class TemperatureLogDomain : RealmObject() {
+@RealmClass
+open class TemperatureLogDomain : RealmModel {
     @PrimaryKey
     var id: Long = 0
 

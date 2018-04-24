@@ -6,7 +6,6 @@ import com.kotlarz.R
 import com.kotlarz.application.FurnaceApp
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

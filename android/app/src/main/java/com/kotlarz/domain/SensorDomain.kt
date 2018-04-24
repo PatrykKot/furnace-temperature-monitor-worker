@@ -1,12 +1,14 @@
 package com.kotlarz.domain
 
 import io.realm.RealmList
-import io.realm.RealmObject
+import io.realm.RealmModel
 import io.realm.annotations.PrimaryKey
+import io.realm.annotations.RealmClass
 
-open class SensorDomain : RealmObject() {
+@RealmClass
+open class SensorDomain : RealmModel {
     @PrimaryKey
-    var id: Long = 0
+    var uuid: Long = 0
 
     var address: String = ""
 

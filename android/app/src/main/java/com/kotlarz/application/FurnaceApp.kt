@@ -3,6 +3,7 @@ package com.kotlarz.application
 import android.app.Application
 import com.kotlarz.dependency.AppComponent
 import com.kotlarz.dependency.DaggerAppComponent
+import io.realm.Realm
 
 open class FurnaceApp : Application() {
     companion object {
@@ -11,9 +12,10 @@ open class FurnaceApp : Application() {
     }
 
     override fun onCreate() {
-        buildGraph()
-
         super.onCreate()
+
+        Realm.init(this)
+        buildGraph()
     }
 
     private fun buildGraph() {
