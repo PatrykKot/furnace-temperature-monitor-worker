@@ -1,5 +1,6 @@
 package com.kotlarz.dependency
 
+import com.kotlarz.presenter.AppConfigurationPresenter
 import com.kotlarz.service.configuration.AppConfigurationService
 import com.kotlarz.service.logs.TemperatureApiService
 import com.kotlarz.service.logs.TemperatureLogService
@@ -18,7 +19,6 @@ class AppModule {
         return Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://localhost:8080")
                 .build()
     }
 
@@ -38,5 +38,11 @@ class AppModule {
     @Singleton
     fun appConfigurationService(): AppConfigurationService {
         return AppConfigurationService()
+    }
+
+    @Provides
+    @Singleton
+    fun appConfigurationPresenter(appConfigurationService: AppConfigurationService): AppConfigurationPresenter {
+        return AppConfigurationPresenter(appConfigurationService)
     }
 }

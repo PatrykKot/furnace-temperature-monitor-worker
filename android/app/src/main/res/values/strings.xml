@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Furnace-temperature-monitor-android</string>
+    <string name="baseUrlConfiguration">Adres serwera</string>
+    <string name="baseUrlPlaceholder">Wpisz adres</string>
+    <string name="saved">Zapisano</string>
 </resources>
