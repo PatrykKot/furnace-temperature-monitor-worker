@@ -10,7 +10,7 @@ class TemperatureLogService(private val apiService: TemperatureApiService,
     fun getTemperaturesLaterThan(date: Date): Observable<List<SensorWithLogsDto>> {
         return Observable.fromCallable { appConfigurationService.getConfiguration() }
                 .flatMap { configuration ->
-                    apiService.getTemperaturesLaterThan(configuration.baseUrl, date.time)
+                    apiService.getTemperaturesLaterThan(configuration.ipAddress, date.time)
                 }
     }
 }

@@ -23,6 +23,7 @@ open class FurnaceApp : Application() {
         Realm.init(this)
         Realm.setDefaultConfiguration(RealmConfiguration.Builder()
                 //.inMemory()
+                .deleteRealmIfMigrationNeeded()
                 .build())
     }
 

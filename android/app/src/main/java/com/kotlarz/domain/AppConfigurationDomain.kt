@@ -1,5 +1,6 @@
 package com.kotlarz.domain
 
+import com.kotlarz.domain.enumeration.ProtocolType
 import io.realm.RealmModel
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
@@ -11,7 +12,9 @@ open class AppConfigurationDomain : RealmModel {
         val DEFAULT = AppConfigurationDomain()
 
         init {
-            DEFAULT.baseUrl = "http://localhost:8080"
+            DEFAULT.ipAddress = "0.0.0.0"
+            DEFAULT.port = 0
+            DEFAULT.protocol = ProtocolType.HTTP.name
             DEFAULT.uuid = ""
         }
     }
@@ -19,5 +22,13 @@ open class AppConfigurationDomain : RealmModel {
     @PrimaryKey
     var uuid: String = UUID.randomUUID().toString()
 
-    var baseUrl: String = ""
+    var protocol: String = ProtocolType.HTTP.name
+
+    var ipAddress: String = ""
+
+    var port: Long = 0
+
+    fun getProcotolType(): ProtocolType {
+        return ProtocolType.valueOf(protocol)
+    }
 }

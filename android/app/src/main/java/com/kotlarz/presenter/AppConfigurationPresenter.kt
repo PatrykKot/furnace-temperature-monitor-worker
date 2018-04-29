@@ -31,7 +31,10 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
                     appConfigurationService.getConfiguration()
                 }
                 .map { configuration ->
-                    configuration.baseUrl = configurationActivity.getBaseUrl()
+                    configuration.ipAddress = configurationActivity.getIpAddress()
+                    configuration.port = configurationActivity.getPort()
+                    configuration.protocol = configurationActivity.getProtocol().name
+
                     appConfigurationService.save(configuration)
                 }
                 .subscribe {
@@ -40,13 +43,9 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
     }
 
     private fun initToolbar(configurationActivity: ConfigurationActivity) {
-        val toolbar = configurationActivity.configuration_toolbar
-
-        configurationActivity.setSupportActionBar(toolbar)
-        configurationActivity.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        configurationActivity.supportActionBar!!.setDisplayShowHomeEnabled(true)
-
-        toolbar.setNavigationOnClickListener { configurationActivity.onBackPressed() }
+        configurationActivity.configuration_toolbar.setNavigationOnClickListener {
+            configurationActivity.onBackPressed()
+        }
     }
 
     private fun refreshConfiguration(configurationActivity: ConfigurationActivity) {
@@ -57,7 +56,9 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
                 .observeOn(Schedulers.io())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe { configuration ->
-                    configurationActivity.setBaseUrl(configuration.baseUrl)
+                    configurationActivity.setIpAddress(configuration.ipAddress)
+                    configurationActivity.setPort(configuration.port)
+                    configurationActivity.setProtocol(configuration.getProcotolType())
                 }
     }
 
