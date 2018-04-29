@@ -1,33 +1,45 @@
 package com.kotlarz.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import com.kotlarz.R
 import com.kotlarz.application.FurnaceApp
-import com.kotlarz.service.configuration.AppConfigurationService
+import com.kotlarz.presenter.MainPresenter
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
     @Inject
-    lateinit var appConfigurationService: AppConfigurationService
+    lateinit var mainPresenter: MainPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         FurnaceApp.graph.inject(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
 
-        appConfigurationService.isConfigured()
-                .subscribe { isConfigured ->
-                    if (!isConfigured) {
-                        redirectToConfiguration()
-                    }
-                }
+        mainPresenter.init(this)
     }
 
-    private fun redirectToConfiguration() {
-        val configurationIntent = Intent(this, ConfigurationActivity::class.java)
-        startActivity(configurationIntent)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val acted = mainPresenter.onOptionsSelected(item!!, this)
+        return if (!acted) {
+            super.onOptionsItemSelected(item)
+        } else {
+            true
+        }
+    }
+
+    override fun onDestroy() {
+        mainPresenter.close(this)
+        super.onDestroy()
     }
 }

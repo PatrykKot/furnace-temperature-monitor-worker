@@ -1,17 +1,14 @@
 package com.kotlarz.service.configuration
 
 import com.kotlarz.domain.AppConfigurationDomain
-import io.reactivex.Single
 import io.realm.Realm
 import io.realm.kotlin.deleteFromRealm
 import io.realm.kotlin.where
 
 class AppConfigurationService {
-    fun getConfiguration(): Single<AppConfigurationDomain> {
-        return Single.create<AppConfigurationDomain> { emitter ->
-            Realm.getDefaultInstance().use { realm ->
-                emitter.onSuccess(getConfiguration(realm))
-            }
+    fun getConfiguration(): AppConfigurationDomain {
+        Realm.getDefaultInstance().use { realm ->
+            return getConfiguration(realm)
         }
     }
 
@@ -33,15 +30,11 @@ class AppConfigurationService {
         }
     }
 
-    fun save(configuration: AppConfigurationDomain): Single<Any> {
-        return Single.create { emitter ->
-            Realm.getDefaultInstance().use { database ->
-                database.executeTransaction { realm ->
-                    save(configuration, realm)
-                }
+    fun save(configuration: AppConfigurationDomain) {
+        Realm.getDefaultInstance().use { database ->
+            database.executeTransaction { realm ->
+                save(configuration, realm)
             }
-
-            emitter.onSuccess(Any())
         }
     }
 
@@ -50,11 +43,9 @@ class AppConfigurationService {
         realm.insertOrUpdate(configuration)
     }
 
-    fun isConfigured(): Single<Boolean> {
-        return Single.create { emitter ->
-            Realm.getDefaultInstance().use { realm ->
-                emitter.onSuccess(isConfigured(realm))
-            }
+    fun isConfigured(): Boolean {
+        Realm.getDefaultInstance().use { realm ->
+            return isConfigured(realm)
         }
     }
 

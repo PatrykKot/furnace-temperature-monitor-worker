@@ -1,6 +1,7 @@
 package com.kotlarz.dependency
 
 import com.kotlarz.presenter.AppConfigurationPresenter
+import com.kotlarz.presenter.MainPresenter
 import com.kotlarz.service.configuration.AppConfigurationService
 import com.kotlarz.service.logs.TemperatureApiService
 import com.kotlarz.service.logs.TemperatureLogService
@@ -44,5 +45,11 @@ class AppModule {
     @Singleton
     fun appConfigurationPresenter(appConfigurationService: AppConfigurationService): AppConfigurationPresenter {
         return AppConfigurationPresenter(appConfigurationService)
+    }
+
+    @Provides
+    @Singleton
+    fun mainPresenter(appConfigurationService: AppConfigurationService): MainPresenter {
+        return MainPresenter(appConfigurationService)
     }
 }

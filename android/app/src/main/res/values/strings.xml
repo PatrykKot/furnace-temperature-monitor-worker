@@ -3,4 +3,5 @@
     <string name="baseUrlConfiguration">Adres serwera</string>
     <string name="baseUrlPlaceholder">Wpisz adres</string>
     <string name="saved">Zapisano</string>
+    <string name="configuration">Konfiguracja</string>
 </resources>
