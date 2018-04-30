@@ -57,7 +57,11 @@ class ConfigurationActivity : AppCompatActivity() {
     }
 
     fun getPort(): Long {
-        return portEditText.text.toString().toLong()
+        return try {
+            portEditText.text.toString().toLong()
+        } catch (ex: NumberFormatException) {
+            0
+        }
     }
 
     fun getProtocol(): ProtocolType {
@@ -69,8 +73,8 @@ class ConfigurationActivity : AppCompatActivity() {
     }
 
     fun setProtocol(protocolType: ProtocolType) {
-        /* val protocolArray = resources.getStringArray(R.array.protocolSpinnerValues)
-         val index = protocolArray.indexOf(protocolType.name)
-         protocolSpinner.setSelection(index)*/ // TODO FIX
+        val protocolArray = resources.getStringArray(R.array.protocolSpinnerValues)
+        val index = protocolArray.indexOf(protocolType.name)
+        protocolSpinner.setSelection(index)
     }
 }
