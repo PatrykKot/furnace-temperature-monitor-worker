@@ -28,7 +28,11 @@ open class AppConfigurationDomain : RealmModel {
 
     var port: Long = 0
 
-    fun getProcotolType(): ProtocolType {
+    fun getProtocolType(): ProtocolType {
         return ProtocolType.valueOf(protocol)
+    }
+
+    fun getUrl(): String {
+        return protocol.toLowerCase() + "//" + ipAddress + ":" + port
     }
 }

@@ -1,5 +1,8 @@
 package com.kotlarz.presenter
 
+import android.content.Context
+import android.util.Log
+import android.view.MenuItem
 import android.widget.Toast
 import com.jakewharton.rxbinding2.view.RxView
 import com.kotlarz.R
@@ -41,7 +44,7 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
 
                     configurationActivity.setIpAddress(configuration.ipAddress)
                     configurationActivity.setPort(configuration.port)
-                    configurationActivity.setProtocol(configuration.getProcotolType())
+                    configurationActivity.setProtocol(configuration.getProtocolType())
                 })
     }
 
@@ -59,11 +62,24 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
                 .subscribe { configuration ->
                     configurationActivity.setIpAddress(configuration.ipAddress)
                     configurationActivity.setPort(configuration.port)
-                    configurationActivity.setProtocol(configuration.getProcotolType())
+                    configurationActivity.setProtocol(configuration.getProtocolType())
                 }
     }
 
     fun close() {
         compositeDisposable.clear()
+    }
+
+    fun onOptionsSelected(item: MenuItem, context: Context): Boolean {
+        return when (item.itemId) {
+            R.id.check_connection_action -> {
+                Log.d(this.javaClass.name, "Checking connection") // TODO
+                true
+            }
+
+            else -> {
+                false
+            }
+        }
     }
 }

@@ -2,6 +2,8 @@ package com.kotlarz.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.kotlarz.R
@@ -41,6 +43,20 @@ class ConfigurationActivity : AppCompatActivity() {
         setSupportActionBar(configuration_toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.configuration_toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val acted = configurationPresenter.onOptionsSelected(item!!, this)
+        return if (!acted) {
+            super.onOptionsItemSelected(item)
+        } else {
+            true
+        }
     }
 
     override fun onDestroy() {

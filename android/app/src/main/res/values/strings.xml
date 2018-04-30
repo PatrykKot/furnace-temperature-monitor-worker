@@ -7,4 +7,5 @@
     <string name="protocol">Protokół</string>
     <string name="port">Port</string>
     <string name="portPlaceholder">Wpisz port</string>
+    <string name="checkConnection">Sprawdź połączenie</string>
 </resources>

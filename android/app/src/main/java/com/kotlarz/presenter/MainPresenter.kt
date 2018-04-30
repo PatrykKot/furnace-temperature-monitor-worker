@@ -24,8 +24,8 @@ class MainPresenter(private val appConfigurationService: AppConfigurationService
                 .fromCallable {
                     appConfigurationService.isConfigured()
                 }
-                .observeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { isConfigured ->
                     if (!isConfigured) {
                         redirectToConfiguration(context)

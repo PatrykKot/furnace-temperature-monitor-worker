@@ -1,9 +1,12 @@
 package com.kotlarz.service.configuration
 
+import android.util.Log
 import com.kotlarz.domain.AppConfigurationDomain
 import io.realm.Realm
 import io.realm.kotlin.deleteFromRealm
 import io.realm.kotlin.where
+import java.net.InetAddress
+import java.net.Socket
 
 class AppConfigurationService {
     fun getConfiguration(): AppConfigurationDomain {
@@ -51,5 +54,19 @@ class AppConfigurationService {
 
     private fun isConfigured(realm: Realm): Boolean {
         return realm.where(AppConfigurationDomain::class.java).count() > 0
+    }
+
+    private fun checkConnection(): Boolean {
+        return try {
+            val configuration = getConfiguration()
+            val address = InetAddress.getByName(configuration.ipAddress)
+            val socket = Socket(address, configuration.port.toInt())
+            socket.close()
+            true
+        } catch (ex: Exception) {
+            Log.e(this.javaClass.name, ex.message, ex)
+            false
+        }
+
     }
 }
