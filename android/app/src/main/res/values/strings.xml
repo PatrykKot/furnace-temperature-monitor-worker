@@ -8,4 +8,7 @@
     <string name="port">Port</string>
     <string name="portPlaceholder">Wpisz port</string>
     <string name="checkConnection">Sprawdź połączenie</string>
+    <string name="checkingConnection">Sprawdzanie połączenia</string>
+    <string name="connectionWorking">Połączenie udane</string>
+    <string name="connectionNotWorking">Połączenie nieudane</string>
 </resources>

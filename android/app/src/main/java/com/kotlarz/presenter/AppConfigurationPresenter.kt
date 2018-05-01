@@ -1,12 +1,11 @@
 package com.kotlarz.presenter
 
-import android.content.Context
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import com.jakewharton.rxbinding2.view.RxView
 import com.kotlarz.R
 import com.kotlarz.activity.ConfigurationActivity
+import com.kotlarz.domain.AppConfigurationDomain
 import com.kotlarz.service.configuration.AppConfigurationService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -32,19 +31,15 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
                     appConfigurationService.getConfiguration()
                 }
                 .doOnNext { configuration ->
-                    configuration.ipAddress = configurationActivity.getIpAddress()
-                    configuration.port = configurationActivity.getPort()
-                    configuration.protocol = configurationActivity.getProtocol().name
+                    val viewConfig = getConfigurationFromView(configurationActivity)
+                    viewConfig.uuid = configuration.uuid
 
-                    appConfigurationService.save(configuration)
+                    appConfigurationService.save(viewConfig)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {configuration ->
+                .subscribe { configuration ->
                     Toast.makeText(configurationActivity, R.string.saved, Toast.LENGTH_SHORT).show()
-
-                    configurationActivity.setIpAddress(configuration.ipAddress)
-                    configurationActivity.setPort(configuration.port)
-                    configurationActivity.setProtocol(configuration.getProtocolType())
+                    setConfigurationInView(configurationActivity, configuration)
                 })
     }
 
@@ -60,20 +55,47 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { configuration ->
-                    configurationActivity.setIpAddress(configuration.ipAddress)
-                    configurationActivity.setPort(configuration.port)
-                    configurationActivity.setProtocol(configuration.getProtocolType())
+                    setConfigurationInView(configurationActivity, configuration)
                 }
+    }
+
+    private fun getConfigurationFromView(configurationActivity: ConfigurationActivity): AppConfigurationDomain {
+        val config = AppConfigurationDomain()
+        config.ipAddress = configurationActivity.ipAddress
+        config.port = configurationActivity.port
+        config.protocol = configurationActivity.protocol.name
+        return config
+    }
+
+    private fun setConfigurationInView(configurationActivity: ConfigurationActivity, configuration: AppConfigurationDomain) {
+        configurationActivity.ipAddress = configuration.ipAddress
+        configurationActivity.port = configuration.port
+        configurationActivity.protocol = configuration.protocolType
     }
 
     fun close() {
         compositeDisposable.clear()
     }
 
-    fun onOptionsSelected(item: MenuItem, context: Context): Boolean {
+    fun onOptionsSelected(item: MenuItem, context: ConfigurationActivity): Boolean {
         return when (item.itemId) {
             R.id.check_connection_action -> {
-                Log.d(this.javaClass.name, "Checking connection") // TODO
+                Observable
+                        .fromCallable {
+                            Toast.makeText(context, R.string.checkingConnection, Toast.LENGTH_SHORT).show()
+                        }
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(Schedulers.io())
+                        .map { getConfigurationFromView(context) }
+                        .map { appConfigurationService.checkConnection(it) }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { working ->
+                            if (working) {
+                                Toast.makeText(context, R.string.connectionWorking, Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, R.string.connectionNotWorking, Toast.LENGTH_SHORT).show()
+                            }
+                        }
                 true
             }
 

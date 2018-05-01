@@ -28,11 +28,13 @@ open class AppConfigurationDomain : RealmModel {
 
     var port: Long = 0
 
-    fun getProtocolType(): ProtocolType {
-        return ProtocolType.valueOf(protocol)
-    }
+    val protocolType: ProtocolType
+        get() {
+            return ProtocolType.valueOf(protocol)
+        }
 
-    fun getUrl(): String {
-        return protocol.toLowerCase() + "//" + ipAddress + ":" + port
-    }
+    val url: String
+        get() {
+            return protocol.toLowerCase() + "://" + ipAddress + ":" + port
+        }
 }

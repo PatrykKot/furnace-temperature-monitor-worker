@@ -18,6 +18,7 @@ class AppModule {
     @Singleton
     fun retrofit(): Retrofit {
         return Retrofit.Builder()
+                .baseUrl("http://localhost")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -37,8 +38,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun appConfigurationService(): AppConfigurationService {
-        return AppConfigurationService()
+    fun appConfigurationService(retrofit: Retrofit): AppConfigurationService {
+        return AppConfigurationService(retrofit)
     }
 
     @Provides

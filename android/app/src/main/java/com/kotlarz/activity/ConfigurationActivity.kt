@@ -64,33 +64,33 @@ class ConfigurationActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    fun setIpAddress(text: String) {
-        ipAddressEditText.setText(text, TextView.BufferType.EDITABLE)
-    }
-
-    fun getIpAddress(): String {
-        return ipAddressEditText.text.toString()
-    }
-
-    fun getPort(): Long {
-        return try {
-            portEditText.text.toString().toLong()
-        } catch (ex: NumberFormatException) {
-            0
+    var ipAddress: String
+        get() {
+            return ipAddressEditText.text.toString()
         }
-    }
+        set(value) {
+            ipAddressEditText.setText(value, TextView.BufferType.EDITABLE)
+        }
 
-    fun getProtocol(): ProtocolType {
-        return ProtocolType.valueOf(protocolSpinner.selectedItem.toString().toUpperCase())
-    }
+    var port: Long
+        get() {
+            return try {
+                portEditText.text.toString().toLong()
+            } catch (ex: NumberFormatException) {
+                0
+            }
+        }
+        set(value) {
+            portEditText.setText(value.toString(), TextView.BufferType.EDITABLE)
+        }
 
-    fun setPort(port: Long) {
-        portEditText.setText(port.toString(), TextView.BufferType.EDITABLE)
-    }
-
-    fun setProtocol(protocolType: ProtocolType) {
-        val protocolArray = resources.getStringArray(R.array.protocolSpinnerValues)
-        val index = protocolArray.indexOf(protocolType.name)
-        protocolSpinner.setSelection(index)
-    }
+    var protocol: ProtocolType
+        get() {
+            return ProtocolType.valueOf(protocolSpinner.selectedItem.toString().toUpperCase())
+        }
+        set(protocolType) {
+            val protocolArray = resources.getStringArray(R.array.protocolSpinnerValues)
+            val index = protocolArray.indexOf(protocolType.name)
+            protocolSpinner.setSelection(index)
+        }
 }

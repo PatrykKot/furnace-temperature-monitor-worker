@@ -1,14 +1,17 @@
 package com.kotlarz.service.configuration
 
-import android.util.Log
 import com.kotlarz.domain.AppConfigurationDomain
+import io.reactivex.Observable
 import io.realm.Realm
 import io.realm.kotlin.deleteFromRealm
 import io.realm.kotlin.where
-import java.net.InetAddress
-import java.net.Socket
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.http.GET
+import retrofit2.http.Url
+import java.util.concurrent.atomic.AtomicBoolean
 
-class AppConfigurationService {
+class AppConfigurationService(private val retrofit: Retrofit) {
     fun getConfiguration(): AppConfigurationDomain {
         Realm.getDefaultInstance().use { realm ->
             return getConfiguration(realm)
@@ -56,17 +59,21 @@ class AppConfigurationService {
         return realm.where(AppConfigurationDomain::class.java).count() > 0
     }
 
-    private fun checkConnection(): Boolean {
-        return try {
-            val configuration = getConfiguration()
-            val address = InetAddress.getByName(configuration.ipAddress)
-            val socket = Socket(address, configuration.port.toInt())
-            socket.close()
-            true
-        } catch (ex: Exception) {
-            Log.e(this.javaClass.name, ex.message, ex)
-            false
-        }
+    fun checkConnection(configuration: AppConfigurationDomain): Boolean {
+        val success = AtomicBoolean()
+        val checkConnectionApi = retrofit.create(CheckConnectionApi::class.java)
+        val url = configuration.url
+        checkConnectionApi.checkConnection(url)
+                .subscribe({ response ->
+                    success.set(response.code() > 0)
+                }, {
+                    success.set(false)
+                }, {})
+        return success.get()
+    }
 
+    private interface CheckConnectionApi {
+        @GET
+        fun checkConnection(@Url url: String): Observable<Response<Void>>
     }
 }
