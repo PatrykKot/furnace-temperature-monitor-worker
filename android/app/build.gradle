@@ -54,6 +54,9 @@ dependencies {
     // RxBindings
     implementation group: 'com.jakewharton.rxbinding2', name: 'rxbinding', version: '2.1.1'
 
+    // SuperToasts
+    implementation 'com.github.johnpersano:supertoasts:2.0'
+
     // Testing
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

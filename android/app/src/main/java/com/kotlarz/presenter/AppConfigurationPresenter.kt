@@ -1,7 +1,10 @@
 package com.kotlarz.presenter
 
+import android.graphics.Typeface
+import android.view.Gravity
 import android.view.MenuItem
-import android.widget.Toast
+import com.github.johnpersano.supertoasts.library.Style
+import com.github.johnpersano.supertoasts.library.SuperActivityToast
 import com.jakewharton.rxbinding2.view.RxView
 import com.kotlarz.R
 import com.kotlarz.activity.ConfigurationActivity
@@ -28,17 +31,16 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
                 .map {
-                    appConfigurationService.getConfiguration()
+                    val viewConfig = getConfigurationFromView(configurationActivity)
+                    viewConfig.uuid = appConfigurationService.getConfiguration().uuid
+                    viewConfig
                 }
                 .doOnNext { configuration ->
-                    val viewConfig = getConfigurationFromView(configurationActivity)
-                    viewConfig.uuid = configuration.uuid
-
-                    appConfigurationService.save(viewConfig)
+                    appConfigurationService.save(configuration)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { configuration ->
-                    Toast.makeText(configurationActivity, R.string.saved, Toast.LENGTH_SHORT).show()
+                    createInfoToast(configurationActivity, Style.green(), R.string.saved).show()
                     setConfigurationInView(configurationActivity, configuration)
                 })
     }
@@ -80,20 +82,21 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
     fun onOptionsSelected(item: MenuItem, context: ConfigurationActivity): Boolean {
         return when (item.itemId) {
             R.id.check_connection_action -> {
+                val infoToast = createConnectionCheckingToast(context)
+
                 Observable
-                        .fromCallable {
-                            Toast.makeText(context, R.string.checkingConnection, Toast.LENGTH_SHORT).show()
-                        }
+                        .fromCallable { infoToast.show() }
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .observeOn(Schedulers.io())
                         .map { getConfigurationFromView(context) }
                         .map { appConfigurationService.checkConnection(it) }
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { working ->
-                            if (working) {
-                                Toast.makeText(context, R.string.connectionWorking, Toast.LENGTH_SHORT).show()
+                        .subscribe { success ->
+                            infoToast.dismiss()
+                            if (success) {
+                                createInfoToast(context, Style.green(), R.string.connectionWorking).show()
                             } else {
-                                Toast.makeText(context, R.string.connectionNotWorking, Toast.LENGTH_SHORT).show()
+                                createInfoToast(context, Style.red(), R.string.connectionNotWorking).show()
                             }
                         }
                 true
@@ -103,5 +106,27 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
                 false
             }
         }
+    }
+
+    private fun createConnectionCheckingToast(context: ConfigurationActivity): SuperActivityToast {
+        val infoToast = SuperActivityToast.create(context, Style.grey(), Style.TYPE_PROGRESS_CIRCLE)
+        infoToast.progressIndeterminate = true
+        infoToast.isIndeterminate = true
+        infoToast.gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
+        infoToast.frame = Style.FRAME_KITKAT
+        infoToast.animations = Style.ANIMATIONS_FADE
+        infoToast.text = context.resources.getString(R.string.checkingConnection)
+        infoToast.typefaceStyle = Typeface.BOLD
+        return infoToast
+    }
+
+    private fun createInfoToast(context: ConfigurationActivity, style: Style, textId: Int): SuperActivityToast {
+        val infoToast = SuperActivityToast.create(context, style, Style.TYPE_STANDARD)
+        infoToast.text = context.resources.getString(textId)
+        infoToast.gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
+        infoToast.frame = Style.FRAME_KITKAT
+        infoToast.animations = Style.ANIMATIONS_FADE
+        infoToast.typefaceStyle = Typeface.BOLD
+        return infoToast
     }
 }
