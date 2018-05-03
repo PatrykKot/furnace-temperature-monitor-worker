@@ -1,6 +1,7 @@
 package com.kotlarz.activity
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.ArrayAdapter
 import android.widget.TextView
@@ -8,6 +9,7 @@ import com.kotlarz.R
 import com.kotlarz.application.FurnaceApp
 import com.kotlarz.domain.enumeration.ProtocolType
 import com.kotlarz.presenter.AppConfigurationPresenter
+import kotlinx.android.synthetic.main.activity_configuration.*
 import javax.inject.Inject
 
 class ConfigurationActivity : AppCompatActivity() {

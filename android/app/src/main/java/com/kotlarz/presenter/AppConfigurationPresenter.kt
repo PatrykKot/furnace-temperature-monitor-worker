@@ -13,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_configuration.*
 import java.util.concurrent.TimeUnit
 
 class AppConfigurationPresenter(private val appConfigurationService: AppConfigurationService) {

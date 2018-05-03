@@ -2,11 +2,13 @@ package com.kotlarz.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.MenuItem
 import com.kotlarz.R
 import com.kotlarz.activity.ConfigurationActivity
 import com.kotlarz.activity.MainActivity
 import com.kotlarz.service.configuration.AppConfigurationService
+import com.kotlarz.service.logs.LiveTemperatureProvider
 import com.kotlarz.service.logs.TemperatureLogService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,7 +17,9 @@ import io.reactivex.schedulers.Schedulers
 
 class MainPresenter(private val appConfigurationService: AppConfigurationService,
                     private val temperatureLogService: TemperatureLogService) {
-    private var compositeDisposable: CompositeDisposable = CompositeDisposable()
+    private var compositeDisposable = CompositeDisposable()
+
+    private var liveTemperatureProvider = LiveTemperatureProvider()
 
     fun init(mainActivity: MainActivity) {
         redirectIfNeeded(mainActivity)
@@ -56,17 +60,21 @@ class MainPresenter(private val appConfigurationService: AppConfigurationService
     }
 
     private fun initLiveTemperatures(context: MainActivity) {
-        /*compositeDisposable.add(temperatureLogService.getLiveTemperatures()
+        compositeDisposable.add(Observable.fromCallable { appConfigurationService.getConfiguration() }
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap { liveTemperatureProvider.connect(it) }
                 .subscribe({ logs ->
-                    Log.d(this.javaClass.name, "Temperatura: $logs")
-                }, { error ->
-                    Log.e(this.javaClass.name, error.message, error)
-                }, {}))*/
+                    Log.d(this.javaClass.name, "Logs $logs")
+                }, { ex ->
+                    Log.e(this.javaClass.name, ex.message, ex)
+                }, {
+
+                }))
     }
 
     fun close(mainActivity: MainActivity) {
+        liveTemperatureProvider.disconnect()
+
         compositeDisposable.clear()
     }
 }
