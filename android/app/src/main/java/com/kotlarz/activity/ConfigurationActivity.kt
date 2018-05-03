@@ -1,16 +1,13 @@
 package com.kotlarz.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
-import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.kotlarz.R
 import com.kotlarz.application.FurnaceApp
 import com.kotlarz.domain.enumeration.ProtocolType
 import com.kotlarz.presenter.AppConfigurationPresenter
-import kotlinx.android.synthetic.main.activity_configuration.*
 import javax.inject.Inject
 
 class ConfigurationActivity : AppCompatActivity() {
@@ -45,18 +42,11 @@ class ConfigurationActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayShowHomeEnabled(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.configuration_toolbar_menu, menu)
-        return true
-    }
+        configurationPresenter.initMenu(this, menu)
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val acted = configurationPresenter.onOptionsSelected(item!!, this)
-        return if (!acted) {
-            super.onOptionsItemSelected(item)
-        } else {
-            true
-        }
+        return true
     }
 
     override fun onDestroy() {

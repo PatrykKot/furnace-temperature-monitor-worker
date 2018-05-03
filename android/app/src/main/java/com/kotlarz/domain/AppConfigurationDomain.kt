@@ -35,6 +35,11 @@ open class AppConfigurationDomain : RealmModel {
 
     val url: String
         get() {
-            return protocol.toLowerCase() + "://" + ipAddress + ":" + port
+            return """${protocol.toLowerCase()}://$ipAddress:$port"""
+        }
+
+    val webSocketUrl: String
+        get() {
+            return "ws://$ipAddress:$port/websocket"
         }
 }

@@ -1,20 +1,19 @@
 package com.kotlarz.presenter
 
-import android.graphics.Typeface
-import android.view.Gravity
-import android.view.MenuItem
+import android.view.Menu
 import com.github.johnpersano.supertoasts.library.Style
-import com.github.johnpersano.supertoasts.library.SuperActivityToast
+import com.jakewharton.rxbinding2.view.RxMenuItem
 import com.jakewharton.rxbinding2.view.RxView
 import com.kotlarz.R
 import com.kotlarz.activity.ConfigurationActivity
 import com.kotlarz.domain.AppConfigurationDomain
+import com.kotlarz.helper.ToastHelper
 import com.kotlarz.service.configuration.AppConfigurationService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_configuration.*
+import java.util.concurrent.TimeUnit
 
 class AppConfigurationPresenter(private val appConfigurationService: AppConfigurationService) {
     private var compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -26,23 +25,50 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
         refreshConfiguration(configurationActivity)
     }
 
-    private fun initSaveButtonEvent(configurationActivity: ConfigurationActivity) {
-        compositeDisposable.add(RxView.clicks(configurationActivity.appConfigurationSaveButton)
+    private fun initSaveButtonEvent(context: ConfigurationActivity) {
+        val connectableObservable = RxView.clicks(context.appConfigurationSaveButton)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(Schedulers.io())
+                .throttleFirst(3, TimeUnit.SECONDS)
                 .map {
-                    val viewConfig = getConfigurationFromView(configurationActivity)
+                    val viewConfig = getConfigurationFromView(context)
                     viewConfig.uuid = appConfigurationService.getConfiguration().uuid
                     viewConfig
                 }
-                .doOnNext { configuration ->
-                    appConfigurationService.save(configuration)
-                }
+                .map { appConfigurationService.checkConnection(it) }
+                .publish()
+
+        compositeDisposable.add(connectableObservable
+                .filter { !it }
+                .flatMap { saveConfiguration(context) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { configuration ->
-                    createInfoToast(configurationActivity, Style.green(), R.string.saved).show()
-                    setConfigurationInView(configurationActivity, configuration)
+                    ToastHelper.createInfoToast(context, Style.green(), R.string.savedButNotWorking).show()
+                    setConfigurationInView(context, configuration)
                 })
+
+        compositeDisposable.add(connectableObservable
+                .filter { it }
+                .flatMap { saveConfiguration(context) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { configuration ->
+                    ToastHelper.createInfoToast(context, Style.green(), R.string.saved).show()
+                    setConfigurationInView(context, configuration)
+                })
+
+        connectableObservable.connect()
+    }
+
+    private fun saveConfiguration(context: ConfigurationActivity): Observable<AppConfigurationDomain> {
+        return Observable
+                .fromCallable {
+                    val viewConfig = getConfigurationFromView(context)
+                    viewConfig.uuid = appConfigurationService.getConfiguration().uuid
+                    appConfigurationService.save(viewConfig)
+                    viewConfig
+                }
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
     }
 
     private fun initToolbar(configurationActivity: ConfigurationActivity) {
@@ -75,58 +101,32 @@ class AppConfigurationPresenter(private val appConfigurationService: AppConfigur
         configurationActivity.protocol = configuration.protocolType
     }
 
+    fun initMenu(context: ConfigurationActivity, menu: Menu) {
+        val infoToast = ToastHelper.createConnectionCheckingToast(context)
+
+        val disposable = RxMenuItem.clicks(menu.findItem(R.id.check_connection_action))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .throttleFirst(3, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { infoToast.show() }
+                .observeOn(Schedulers.io())
+                .map { getConfigurationFromView(context) }
+                .map { appConfigurationService.checkConnection(it) }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { success ->
+                    infoToast.dismiss()
+                    if (success) {
+                        ToastHelper.createInfoToast(context, Style.green(), R.string.connectionWorking).show()
+                    } else {
+                        ToastHelper.createInfoToast(context, Style.red(), R.string.connectionNotWorking).show()
+                    }
+                }
+
+        compositeDisposable.add(disposable)
+    }
+
     fun close() {
         compositeDisposable.clear()
-    }
-
-    fun onOptionsSelected(item: MenuItem, context: ConfigurationActivity): Boolean {
-        return when (item.itemId) {
-            R.id.check_connection_action -> {
-                val infoToast = createConnectionCheckingToast(context)
-
-                Observable
-                        .fromCallable { infoToast.show() }
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .observeOn(Schedulers.io())
-                        .map { getConfigurationFromView(context) }
-                        .map { appConfigurationService.checkConnection(it) }
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { success ->
-                            infoToast.dismiss()
-                            if (success) {
-                                createInfoToast(context, Style.green(), R.string.connectionWorking).show()
-                            } else {
-                                createInfoToast(context, Style.red(), R.string.connectionNotWorking).show()
-                            }
-                        }
-                true
-            }
-
-            else -> {
-                false
-            }
-        }
-    }
-
-    private fun createConnectionCheckingToast(context: ConfigurationActivity): SuperActivityToast {
-        val infoToast = SuperActivityToast.create(context, Style.grey(), Style.TYPE_PROGRESS_CIRCLE)
-        infoToast.progressIndeterminate = true
-        infoToast.isIndeterminate = true
-        infoToast.gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
-        infoToast.frame = Style.FRAME_KITKAT
-        infoToast.animations = Style.ANIMATIONS_FADE
-        infoToast.text = context.resources.getString(R.string.checkingConnection)
-        infoToast.typefaceStyle = Typeface.BOLD
-        return infoToast
-    }
-
-    private fun createInfoToast(context: ConfigurationActivity, style: Style, textId: Int): SuperActivityToast {
-        val infoToast = SuperActivityToast.create(context, style, Style.TYPE_STANDARD)
-        infoToast.text = context.resources.getString(textId)
-        infoToast.gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
-        infoToast.frame = Style.FRAME_KITKAT
-        infoToast.animations = Style.ANIMATIONS_FADE
-        infoToast.typefaceStyle = Typeface.BOLD
-        return infoToast
     }
 }

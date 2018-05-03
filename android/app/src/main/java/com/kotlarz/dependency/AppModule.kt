@@ -50,7 +50,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun mainPresenter(appConfigurationService: AppConfigurationService): MainPresenter {
-        return MainPresenter(appConfigurationService)
+    fun mainPresenter(appConfigurationService: AppConfigurationService, temperatureLogService: TemperatureLogService): MainPresenter {
+        return MainPresenter(appConfigurationService, temperatureLogService)
     }
 }

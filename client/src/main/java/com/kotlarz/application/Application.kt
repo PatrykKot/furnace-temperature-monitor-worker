@@ -16,6 +16,7 @@ object Application {
                 val platform = PlatformManager.getPlatform()
                 println("Running on $platform")
                 platform == Platform.RASPBERRYPI
+                return false // TODO FIX
             } catch (ex: Exception) {
                 println(ex.message)
                 false

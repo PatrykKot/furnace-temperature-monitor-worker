@@ -11,7 +11,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Sensor {
+public class
+Sensor {
     @Id
     @GeneratedValue
     private Long id;

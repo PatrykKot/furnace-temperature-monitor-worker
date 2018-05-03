@@ -11,4 +11,5 @@
     <string name="checkingConnection">Sprawdzanie połączenia</string>
     <string name="connectionWorking">Połączenie udane</string>
     <string name="connectionNotWorking">Połączenie nieudane</string>
+    <string name="savedButNotWorking">Zapisano, lecz połączenie nie działa</string>
 </resources>
