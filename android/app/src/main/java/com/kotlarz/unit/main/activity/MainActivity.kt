@@ -1,4 +1,4 @@
-package com.kotlarz.activity
+package com.kotlarz.unit.main.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.kotlarz.R
 import com.kotlarz.application.FurnaceApp
-import com.kotlarz.presenter.MainPresenter
+import com.kotlarz.unit.main.presenter.MainPresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 

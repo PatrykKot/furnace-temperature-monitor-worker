@@ -1,10 +1,10 @@
 package com.kotlarz.dependency
 
-import com.kotlarz.presenter.AppConfigurationPresenter
-import com.kotlarz.presenter.MainPresenter
-import com.kotlarz.service.configuration.AppConfigurationService
-import com.kotlarz.service.logs.TemperatureApiService
-import com.kotlarz.service.logs.TemperatureLogService
+import com.kotlarz.unit.configuration.presenter.AppConfigurationPresenter
+import com.kotlarz.unit.configuration.service.AppConfigurationService
+import com.kotlarz.unit.main.presenter.MainPresenter
+import com.kotlarz.unit.main.service.logs.TemperatureLogService
+import com.kotlarz.unit.main.service.logs.api.TemperatureApiService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit

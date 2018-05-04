@@ -1,6 +1,6 @@
-package com.kotlarz.domain
+package com.kotlarz.unit.configuration.domain
 
-import com.kotlarz.domain.enumeration.ProtocolType
+import com.kotlarz.unit.configuration.domain.enumeration.ProtocolType
 import io.realm.RealmModel
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass

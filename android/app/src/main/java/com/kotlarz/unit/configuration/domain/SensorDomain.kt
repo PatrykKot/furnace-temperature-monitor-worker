@@ -1,4 +1,4 @@
-package com.kotlarz.domain
+package com.kotlarz.unit.configuration.domain
 
 import io.realm.RealmList
 import io.realm.RealmModel

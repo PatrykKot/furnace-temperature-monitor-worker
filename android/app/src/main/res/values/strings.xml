@@ -12,4 +12,7 @@
     <string name="connectionWorking">Połączenie udane</string>
     <string name="connectionNotWorking">Połączenie nieudane</string>
     <string name="savedButNotWorking">Zapisano, lecz połączenie nie działa</string>
+    <string name="notConnected">Łączenie z serwerem</string>
+    <string name="connected">Połączono</string>
+    <string name="connectionFailure">Problem z połączeniem</string>
 </resources>

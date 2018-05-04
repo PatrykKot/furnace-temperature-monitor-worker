@@ -1,19 +1,19 @@
-package com.kotlarz.presenter
+package com.kotlarz.unit.main.presenter
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.MenuItem
 import com.kotlarz.R
-import com.kotlarz.activity.ConfigurationActivity
-import com.kotlarz.activity.MainActivity
-import com.kotlarz.service.configuration.AppConfigurationService
-import com.kotlarz.service.logs.LiveTemperatureProvider
-import com.kotlarz.service.logs.TemperatureLogService
+import com.kotlarz.unit.configuration.activity.ConfigurationActivity
+import com.kotlarz.unit.configuration.service.AppConfigurationService
+import com.kotlarz.unit.main.activity.MainActivity
+import com.kotlarz.unit.main.service.logs.TemperatureLogService
+import com.kotlarz.unit.main.service.logs.api.LiveTemperatureProvider
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainPresenter(private val appConfigurationService: AppConfigurationService,
                     private val temperatureLogService: TemperatureLogService) {
@@ -60,20 +60,31 @@ class MainPresenter(private val appConfigurationService: AppConfigurationService
     }
 
     private fun initLiveTemperatures(context: MainActivity) {
-        compositeDisposable.add(Observable.fromCallable { appConfigurationService.getConfiguration() }
+        Observable
+                .fromCallable { appConfigurationService.getConfiguration() }
                 .subscribeOn(Schedulers.io())
                 .flatMap { liveTemperatureProvider.connect(it) }
-                .subscribe({ logs ->
-                    Log.d(this.javaClass.name, "Logs $logs")
-                }, { ex ->
-                    Log.e(this.javaClass.name, ex.message, ex)
-                }, {
+                .subscribe { initLiveTemperaturesHandlers(context) }
+    }
 
-                }))
+    private fun initLiveTemperaturesHandlers(context: MainActivity) {
+        val onOpenDisposable = liveTemperatureProvider.onOpen()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { context.connectionStatus.setText(R.string.connected) }
+        compositeDisposable.add(onOpenDisposable)
+
+        val onFailureDisposable = liveTemperatureProvider.onFailure()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { context.connectionStatus.setText(R.string.connectionFailure) }
+        compositeDisposable.add(onFailureDisposable)
     }
 
     fun close(mainActivity: MainActivity) {
         liveTemperatureProvider.disconnect()
+                .subscribeOn(Schedulers.io())
+                .subscribe()
 
         compositeDisposable.clear()
     }

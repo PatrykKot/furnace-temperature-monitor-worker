@@ -1,6 +1,6 @@
-package com.kotlarz.service.configuration
+package com.kotlarz.unit.configuration.service
 
-import com.kotlarz.domain.AppConfigurationDomain
+import com.kotlarz.unit.configuration.domain.AppConfigurationDomain
 import io.reactivex.Observable
 import io.realm.Realm
 import io.realm.kotlin.deleteFromRealm

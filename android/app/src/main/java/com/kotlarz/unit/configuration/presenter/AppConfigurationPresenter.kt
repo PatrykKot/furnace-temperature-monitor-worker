@@ -1,14 +1,14 @@
-package com.kotlarz.presenter
+package com.kotlarz.unit.configuration.presenter
 
 import android.view.Menu
 import com.github.johnpersano.supertoasts.library.Style
 import com.jakewharton.rxbinding2.view.RxMenuItem
 import com.jakewharton.rxbinding2.view.RxView
 import com.kotlarz.R
-import com.kotlarz.activity.ConfigurationActivity
-import com.kotlarz.domain.AppConfigurationDomain
-import com.kotlarz.helper.ToastHelper
-import com.kotlarz.service.configuration.AppConfigurationService
+import com.kotlarz.helper.ui.ToastHelper
+import com.kotlarz.unit.configuration.activity.ConfigurationActivity
+import com.kotlarz.unit.configuration.domain.AppConfigurationDomain
+import com.kotlarz.unit.configuration.service.AppConfigurationService
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

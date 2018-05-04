@@ -1,7 +1,7 @@
 package com.kotlarz.dependency
 
-import com.kotlarz.activity.ConfigurationActivity
-import com.kotlarz.activity.MainActivity
+import com.kotlarz.unit.configuration.activity.ConfigurationActivity
+import com.kotlarz.unit.main.activity.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 

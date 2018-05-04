@@ -1,4 +1,4 @@
-package com.kotlarz.helper
+package com.kotlarz.helper.ui
 
 import android.content.Context
 import android.graphics.Typeface
