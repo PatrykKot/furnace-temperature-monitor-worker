@@ -4,6 +4,7 @@ import com.kotlarz.unit.configuration.presenter.AppConfigurationPresenter
 import com.kotlarz.unit.configuration.service.AppConfigurationService
 import com.kotlarz.unit.main.presenter.MainPresenter
 import com.kotlarz.unit.main.service.logs.TemperatureLogService
+import com.kotlarz.unit.main.service.logs.api.LiveTemperatureProvider
 import com.kotlarz.unit.main.service.logs.api.TemperatureApiService
 import dagger.Module
 import dagger.Provides
@@ -32,8 +33,10 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun temperatureLogService(apiService: TemperatureApiService, appConfigurationService: AppConfigurationService): TemperatureLogService {
-        return TemperatureLogService(apiService, appConfigurationService)
+    fun temperatureLogService(apiService: TemperatureApiService,
+                              appConfigurationService: AppConfigurationService,
+                              liveTemperatureProvider: LiveTemperatureProvider): TemperatureLogService {
+        return TemperatureLogService(apiService, appConfigurationService, liveTemperatureProvider)
     }
 
     @Provides
@@ -52,5 +55,11 @@ class AppModule {
     @Singleton
     fun mainPresenter(appConfigurationService: AppConfigurationService, temperatureLogService: TemperatureLogService): MainPresenter {
         return MainPresenter(appConfigurationService, temperatureLogService)
+    }
+
+    @Provides
+    @Singleton
+    fun liveTemperatureProvider(): LiveTemperatureProvider {
+        return LiveTemperatureProvider()
     }
 }
