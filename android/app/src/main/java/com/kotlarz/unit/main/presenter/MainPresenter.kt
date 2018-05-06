@@ -7,6 +7,7 @@ import com.kotlarz.R
 import com.kotlarz.unit.configuration.activity.ConfigurationActivity
 import com.kotlarz.unit.configuration.service.AppConfigurationService
 import com.kotlarz.unit.main.activity.MainActivity
+import com.kotlarz.unit.main.helper.TemperatureFragmentManager
 import com.kotlarz.unit.main.service.logs.TemperatureLogService
 import com.kotlarz.unit.main.service.logs.api.event.OnClosedEvent
 import com.kotlarz.unit.main.service.logs.api.event.OnFailureEvent
@@ -22,10 +23,13 @@ class MainPresenter(private val appConfigurationService: AppConfigurationService
                     private val temperatureLogService: TemperatureLogService) {
     private var compositeDisposable = CompositeDisposable()
 
-    fun init(mainActivity: MainActivity) {
-        redirectIfNeeded(mainActivity)
+    private var temperatureFragmentManager: TemperatureFragmentManager? = null
 
-        initLiveTemperatures(mainActivity)
+    fun init(context: MainActivity) {
+        redirectIfNeeded(context)
+        initLiveTemperatures(context)
+
+        temperatureFragmentManager = TemperatureFragmentManager(context)
     }
 
     private fun redirectIfNeeded(context: Context) {
@@ -84,10 +88,7 @@ class MainPresenter(private val appConfigurationService: AppConfigurationService
                 .ofType(OnMessageEvent::class.java)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { event ->
-                    if (event.logs.isNotEmpty()) {
-                        val log = event.logs[0]
-                        context.testTemperatureValue.text = log.value.toString()
-                    }
+                    temperatureFragmentManager?.register(event.logs)
                 })
     }
 

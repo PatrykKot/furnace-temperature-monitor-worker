@@ -14,4 +14,7 @@ class Arguments {
 
     @Parameter(names = ["--mocked"], description = "Should temperature be mocked", required = false)
     var mocked: Boolean = false
+
+    @Parameter(names = ["--mockedSensors"], description = "Number of mocked sensors", required = false)
+    var mockedSensors: Long = 1
 }
