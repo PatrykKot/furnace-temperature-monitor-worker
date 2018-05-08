@@ -22,7 +22,7 @@ public class DatabaseConfiguration {
     public DataSource getDataSource() {
 
         return DataSourceBuilder.create()
-                .url("jdbc:h2:mem:test")
+                        .url( "jdbc:h2:file:./database" )
                 .driverClassName("org.h2.Driver")
                 .build();
     }
