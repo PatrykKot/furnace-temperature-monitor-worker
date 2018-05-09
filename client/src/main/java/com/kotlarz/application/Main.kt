@@ -23,7 +23,7 @@ object Main {
                 AppSettings.arguments = arguments
                 Application.start()
             } catch (ex: ParameterException) {
-                print(ex.message)
+                ex.printStackTrace()
             }
         }
     }
