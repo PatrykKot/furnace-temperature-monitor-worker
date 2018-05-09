@@ -2,4 +2,6 @@
 out/
 .idea/
 build/
+
+*.db
 logs/
