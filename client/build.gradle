@@ -8,13 +8,23 @@ repositories {
 }
 
 dependencies {
+    // Pi4j
     compile group: 'com.pi4j', name: 'pi4j-core', version: '1.1'
     compile group: 'com.pi4j', name: 'pi4j-device', version: '1.1'
+
+    // Apache HttpClient
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+
+    // JCommander
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
+
+    // Jackson
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+
+    // Nitrite
     compile group: 'org.dizitart', name: 'potassium-nitrite', version: '3.0.0'
 
+    // JUnit
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 buildscript {

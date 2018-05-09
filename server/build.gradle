@@ -26,7 +26,7 @@ lombok {
 bootJar {
 
     baseName = 'furnace-temperature-monitor-server'
-    version =  '0.1.0'
+    version = '0.1.0'
 }
 
 repositories {
@@ -37,17 +37,37 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
+    // Spring Boot
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.1.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.0.1.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: '2.0.1.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.0.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-log4j2', version: '2.0.1.RELEASE'
 
+    // Hibernate
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.3.0.CR1'
+
+    // H2
     compile group: 'com.h2database', name: 'h2', version: '1.4.197'
 
+    // Apache Commons Lang
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+
+    // Joda Time
     compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
 
+    // Log4j
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.0'
+
+    // Slf4j
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.0'
+
+    // JUnit
     testCompile("junit:junit")
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.1.RELEASE'
+}
+
+configurations.all {
+    exclude module: "spring-boot-starter-logging"
 }
