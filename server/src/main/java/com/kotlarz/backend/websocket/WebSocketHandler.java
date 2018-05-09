@@ -42,10 +42,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             List<NewTemperatureDto> lastCached = lastTemperaturesResolver.getLastCached();
             if (!lastCached.isEmpty()) {
-
+                String json = mapper.writeValueAsString(lastCached);
+                session.sendMessage(new TextMessage(json));
             }
-            String json = mapper.writeValueAsString(lastCached);
-            session.sendMessage(new TextMessage(json));
         }
     }
 
