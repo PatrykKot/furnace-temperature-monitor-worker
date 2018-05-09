@@ -1,11 +1,17 @@
 package com.kotlarz.service.sender
 
 import com.kotlarz.service.dto.TemperatureLog
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.dizitart.no2.FindOptions
 import org.dizitart.no2.objects.ObjectRepository
 import java.io.File
 
 class LogsCache {
+    companion object {
+        private val log: Logger = LogManager.getLogger(LogsCache.javaClass)
+    }
+
     private val database = org.dizitart.kno2.nitrite {
         compress = true
         file = File("database.db")
@@ -14,11 +20,11 @@ class LogsCache {
     private val repository: ObjectRepository<TemperatureLog>
 
     init {
-        println("Opening database")
+        log.debug("Opening database")
         repository = database.getRepository(TemperatureLog::class.java)
 
         Runtime.getRuntime().addShutdownHook(Thread {
-            println("Closing database")
+            log.debug("Closing database")
             repository.close()
         })
     }

@@ -9,10 +9,16 @@ import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.io.IOException
 import java.io.UnsupportedEncodingException
 
 class LogsSender {
+    companion object {
+        private val log: Logger = LogManager.getLogger(LogsSender.javaClass)
+    }
+
     private val client: CloseableHttpClient = HttpClientBuilder
             .create()
             .setDefaultRequestConfig(RequestConfig.custom()
@@ -37,7 +43,7 @@ class LogsSender {
 
         if (!runner.isAlive) {
             runner = Thread {
-                println("Invoking sender")
+                log.debug("Invoking sender")
                 call()
             }
             runner.start()
@@ -47,19 +53,19 @@ class LogsSender {
     private fun call() {
         try {
             val toSend = queue.get()
-            println("""Sending ${toSend.size} logs""")
+            log.debug("""Sending ${toSend.size} logs""")
 
             send(toSend)
-            println("Sending success")
+            log.debug("Sending success")
             queue.remove(toSend)
 
             while (true) {
                 val fromCache = queue.fromCache(MAX_LOGS_PER_REQUEST)
                 if (fromCache.isNotEmpty()) {
-                    println("Cached logs to send: " + queue.inCache())
-                    println("""Sending logs from cache. Size ${fromCache.size}""")
+                    log.debug("Cached logs to send: " + queue.inCache())
+                    log.debug("""Sending logs from cache. Size ${fromCache.size}""")
                     send(fromCache)
-                    println("Sending cached logs success")
+                    log.debug("Sending cached logs success")
                     queue.removeInCache(fromCache)
                 } else {
                     break
@@ -67,7 +73,7 @@ class LogsSender {
             }
 
         } catch (ex: Exception) {
-            println(ex.message)
+            log.error(ex.message, ex)
         }
 
     }
@@ -76,7 +82,12 @@ class LogsSender {
     private fun send(toSend: List<TemperatureLog>) {
         val baseUrl = buildBaseUrl()
         val post = createPost(toSend, baseUrl)
-        client.execute(post)
+
+        try {
+            client.execute(post)
+        } finally {
+            post.releaseConnection()
+        }
     }
 
     @Throws(UnsupportedEncodingException::class, JsonProcessingException::class)
