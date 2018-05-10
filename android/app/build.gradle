@@ -16,7 +16,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -37,10 +37,10 @@ dependencies {
 
     // Support
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:support-v4:27.1.1'
 
     // Dagger
     implementation group: 'com.google.dagger', name: 'dagger', version: '2.15'
-    implementation 'com.android.support:support-v4:27.1.1'
     kapt group: 'com.google.dagger', name: 'dagger-compiler', version: '2.15'
 
     // Retrofit

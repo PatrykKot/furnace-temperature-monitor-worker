@@ -7,7 +7,7 @@ import java.util.*
 
 class LogsQueue {
     companion object {
-        private val log: Logger = LogManager.getLogger(LogsQueue.javaClass)
+        private val log: Logger = LogManager.getLogger(LogsQueue::class.java)
     }
 
     private val logs: MutableList<TemperatureLog> = LinkedList()

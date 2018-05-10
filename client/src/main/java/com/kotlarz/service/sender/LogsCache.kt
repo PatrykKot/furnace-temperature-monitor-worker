@@ -9,7 +9,7 @@ import java.io.File
 
 class LogsCache {
     companion object {
-        private val log: Logger = LogManager.getLogger(LogsCache.javaClass)
+        private val log: Logger = LogManager.getLogger(LogsCache::class.java)
     }
 
     private val database = org.dizitart.kno2.nitrite {

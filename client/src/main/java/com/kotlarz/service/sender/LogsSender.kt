@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException
 
 class LogsSender {
     companion object {
-        private val log: Logger = LogManager.getLogger(LogsSender.javaClass)
+        private val log: Logger = LogManager.getLogger(LogsSender::class.java)
     }
 
     private val client: CloseableHttpClient = HttpClientBuilder
