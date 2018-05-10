@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn org.conscrypt.*
+-dontwarn java.beans.*
+-dontwarn org.w3c.dom.bootstrap.*
+-dontwarn okio.*
+-dontwarn retrofit2.*

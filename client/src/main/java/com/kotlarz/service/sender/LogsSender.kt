@@ -73,7 +73,7 @@ class LogsSender {
             }
 
         } catch (ex: Exception) {
-            log.error(ex.message, ex)
+            log.error(ex.message)
         }
 
     }
