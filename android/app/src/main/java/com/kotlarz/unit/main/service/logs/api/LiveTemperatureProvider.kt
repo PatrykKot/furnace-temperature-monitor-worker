@@ -19,6 +19,7 @@ class LiveTemperatureProvider {
     fun connect(configuration: AppConfigurationDomain): Observable<LiveTemperatureEvent> {
         return Flowable
                 .create<LiveTemperatureEvent>({ emitter ->
+                    // TODO STOMP
                     val request = Request.Builder()
                             .url(configuration.webSocketUrl)
                             .build()

@@ -15,36 +15,40 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.kotlarz.backend")
+@EnableJpaRepositories( basePackages = "com.kotlarz.backend" )
 @EnableTransactionManagement
-public class DatabaseConfiguration {
-    @Bean("h2datasource")
-    public DataSource getDataSource() {
-
+public class DatabaseConfiguration
+{
+    @Bean( "h2datasource" )
+    public DataSource getDataSource()
+    {
         return DataSourceBuilder.create()
                         .url( "jdbc:h2:file:./database" )
-                .driverClassName("org.h2.Driver")
-                .build();
+                        .driverClassName( "org.h2.Driver" )
+                        .build();
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Qualifier("h2datasource") DataSource dataSource) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+                    @Qualifier( "h2datasource" ) DataSource dataSource )
+    {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true);
-        vendorAdapter.setDatabasePlatform("H2");
+        vendorAdapter.setGenerateDdl( true );
+        vendorAdapter.setDatabasePlatform( "H2" );
 
         LocalContainerEntityManagerFactoryBean factory =
-                new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.kotlarz.backend.domain");
-        factory.setDataSource(dataSource);
+                        new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter( vendorAdapter );
+        factory.setPackagesToScan( "com.kotlarz.backend.domain" );
+        factory.setDataSource( dataSource );
         return factory;
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManager) {
+    public PlatformTransactionManager transactionManager( EntityManagerFactory entityManager )
+    {
         JpaTransactionManager manager = new JpaTransactionManager();
-        manager.setEntityManagerFactory(entityManager);
+        manager.setEntityManagerFactory( entityManager );
         return manager;
     }
 }
