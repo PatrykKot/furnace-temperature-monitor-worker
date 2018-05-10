@@ -20,11 +20,11 @@ class LogsCache {
     private val repository: ObjectRepository<TemperatureLog>
 
     init {
-        log.debug("Opening database")
+        log.info("Opening database")
         repository = database.getRepository(TemperatureLog::class.java)
 
         Runtime.getRuntime().addShutdownHook(Thread {
-            log.debug("Closing database")
+            log.info("Closing database")
             repository.close()
         })
     }

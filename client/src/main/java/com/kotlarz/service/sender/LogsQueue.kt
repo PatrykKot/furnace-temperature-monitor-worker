@@ -21,10 +21,10 @@ class LogsQueue {
             logs.addAll(temperatureLog)
 
             if (logs.size >= MAX_IN_MEMORY_LOGS) {
-                log.debug("""Filling in disk cache with ${logs.size}""")
+                log.info("""Filling in disk cache with ${logs.size}""")
                 cache.insert(logs)
                 logs.clear()
-                log.debug("""Saved on disk ${cache.size()}""")
+                log.info("""Saved on disk ${cache.size()}""")
             }
         }
     }
