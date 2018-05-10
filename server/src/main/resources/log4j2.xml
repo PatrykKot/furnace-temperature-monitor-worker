@@ -1,37 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration monitorInterval="60">
-    <Properties>
-        <Property name="log-path">logs</Property>
-        <Property name="pattern">[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1}(%L): %msg%n</Property>
-    </Properties>
+<Configuration status="WARN">
     <Appenders>
-        <Console name="consoleAppender" target="SYSTEM_OUT">
-            <PatternLayout>
-                <pattern>
-                    ${pattern}
-                </pattern>>
-            </PatternLayout>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <RollingFile name="fileAppender">
-            <FileName>${log-path}/server.log</FileName>
-            <FilePattern>${log-path}/server-%d{yyyy-MM-dd-hh-mm}.log.zip</FilePattern>
-            <PatternLayout>
-                <pattern>
-                    ${pattern}
-                </pattern>
-            </PatternLayout>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-            </Policies>
+        <RollingFile name="RollingFile"
+                     fileName="logs/server.log"
+                     filePattern="logs/server-%d{yyyy-MM-dd}.log.zip"
+                     ignoreExceptions="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <TimeBasedTriggeringPolicy/>
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="com.kotlarz" level="debug" additivity="false">
-            <AppenderRef ref="fileAppender"/>
-            <AppenderRef ref="consoleAppender"/>
-        </Logger>
-        <Root>
-            <AppenderRef ref="consoleAppender"/>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFile"/>
         </Root>
     </Loggers>
 </Configuration>

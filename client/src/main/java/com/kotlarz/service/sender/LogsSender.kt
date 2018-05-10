@@ -43,7 +43,7 @@ class LogsSender {
 
         if (!runner.isAlive) {
             runner = Thread {
-                log.debug("Invoking sender")
+                log.info("Invoking sender")
                 call()
             }
             runner.start()
@@ -53,19 +53,19 @@ class LogsSender {
     private fun call() {
         try {
             val toSend = queue.get()
-            log.debug("""Sending ${toSend.size} logs""")
+            log.info("""Sending ${toSend.size} logs""")
 
             send(toSend)
-            log.debug("Sending success")
+            log.info("Sending success")
             queue.remove(toSend)
 
             while (true) {
                 val fromCache = queue.fromCache(MAX_LOGS_PER_REQUEST)
                 if (fromCache.isNotEmpty()) {
-                    log.debug("Cached logs to send: " + queue.inCache())
-                    log.debug("""Sending logs from cache. Size ${fromCache.size}""")
+                    log.info("Cached logs to send: " + queue.inCache())
+                    log.info("""Sending logs from cache. Size ${fromCache.size}""")
                     send(fromCache)
-                    log.debug("Sending cached logs success")
+                    log.info("Sending cached logs success")
                     queue.removeInCache(fromCache)
                 } else {
                     break
