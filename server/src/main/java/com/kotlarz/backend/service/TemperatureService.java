@@ -27,6 +27,7 @@ public class TemperatureService {
 
     @Transactional
     public void report(List<NewTemperatureDto> temperatureDtos) {
+        log.info("Reporting " + temperatureDtos.size() + " new logs");
         List<Sensor> sensors = temperatureDtos.stream()
                 .map(dto -> dto.getAddress())
                 .distinct()
@@ -35,6 +36,7 @@ public class TemperatureService {
                         .build()))
                 .collect(Collectors.toList());
 
+        log.info("Found " + sensors.size() + " sensors for new logs");
         List<TemperatureLog> logs = temperatureDtos.stream()
                 .map(dto -> TemperatureLog.builder()
                         .date(dto.getDate())
@@ -46,7 +48,7 @@ public class TemperatureService {
                         .build())
                 .collect(Collectors.toList());
 
-        log.info("Saving " + logs.size() + " reports");
+        log.info("Saving " + logs.size() + " new log entities");
         temperatureLogRepository.saveAll(logs);
     }
 
