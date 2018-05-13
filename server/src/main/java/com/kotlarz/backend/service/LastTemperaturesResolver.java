@@ -19,7 +19,7 @@ public class LastTemperaturesResolver {
                 .anyMatch(entry -> entry.getValue().getDate().after(date));
     }
 
-    public List<NewTemperatureDto> filterLastLogs(List<NewTemperatureDto> logs) {
+    public void report(List<NewTemperatureDto> logs) {
         synchronized (lastTemperatures) {
             Map<String, List<NewTemperatureDto>> groupedByAddress = logs.stream()
                     .collect(Collectors.groupingBy(NewTemperatureDto::getAddress));
@@ -30,10 +30,9 @@ public class LastTemperaturesResolver {
                             .orElseThrow(RuntimeException::new))
                     .collect(Collectors.toList());
 
-            return distinctLogs.stream()
+            distinctLogs.stream()
                     .filter(this::isLastLog)
-                    .peek(log -> lastTemperatures.put(log.getAddress(), log))
-                    .collect(Collectors.toList());
+                    .forEach(log -> lastTemperatures.put(log.getAddress(), log));
         }
     }
 

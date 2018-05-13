@@ -1,4 +1,4 @@
-package com.kotlarz.backend.websocket;
+package com.kotlarz.backend.web.live.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kotlarz.backend.service.LastTemperaturesResolver;
@@ -49,7 +49,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         synchronized (sessions) {
             sessions.removeIf(foundSession -> foundSession.getId().equals(session.getId()));
         }

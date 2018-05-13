@@ -1,6 +1,6 @@
 package com.kotlarz.backend.configuration;
 
-import com.kotlarz.backend.websocket.WebSocketHandler;
+import com.kotlarz.backend.web.live.websocket.WebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,10 @@
-package com.kotlarz.backend.web.api;
+package com.kotlarz.backend.web.api.rest;
 
 import com.kotlarz.backend.service.LastTemperaturesResolver;
 import com.kotlarz.backend.service.TemperatureService;
 import com.kotlarz.backend.web.dto.NewTemperatureDto;
 import com.kotlarz.backend.web.dto.SensorWithLogsDto;
-import com.kotlarz.backend.websocket.WebSocketHandler;
+import com.kotlarz.backend.web.live.LiveTemperaturesPublisher;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +21,10 @@ public class TemperatureController {
     private TemperatureService temperatureService;
 
     @Autowired
-    private WebSocketHandler wsHandler;
+    private LastTemperaturesResolver lastTemperaturesResolver;
 
     @Autowired
-    private LastTemperaturesResolver lastTemperaturesResolver;
+    private LiveTemperaturesPublisher liveTemperaturesPublisher;
 
     @GetMapping("sensors")
     public List<SensorWithLogsDto> getAll() {
@@ -42,12 +42,7 @@ public class TemperatureController {
     public void reportNew(@RequestBody List<NewTemperatureDto> temperatureDtos) {
         temperatureService.report(temperatureDtos);
 
-        List<NewTemperatureDto> logs = lastTemperaturesResolver.filterLastLogs(temperatureDtos);
-        if (!logs.isEmpty()) {
-            log.info("Sending " + logs.size() + " logs to websocket clients");
-            wsHandler.sendNewLogs(logs);
-        } else {
-            log.info("No logs to send by websocket");
-        }
+        lastTemperaturesResolver.report(temperatureDtos);
+        liveTemperaturesPublisher.send();
     }
 }
