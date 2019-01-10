@@ -1,6 +1,6 @@
-package com.kotlarz.service.sensor
+package com.kotlarz.service.reader
 
-import com.kotlarz.service.domain.TemperatureLogDomain
+import com.kotlarz.service.cache.domain.TemperatureLogDomain
 
 interface TemperatureReader {
     fun readAll(): List<TemperatureLogDomain>

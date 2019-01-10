@@ -1,6 +1,6 @@
-package com.kotlarz.service.sensor
+package com.kotlarz.service.reader
 
-import com.kotlarz.service.domain.TemperatureLogDomain
+import com.kotlarz.service.cache.domain.TemperatureLogDomain
 import com.pi4j.component.temperature.TemperatureSensor
 import com.pi4j.component.temperature.impl.TmpDS18B20DeviceType
 import com.pi4j.io.w1.W1Device

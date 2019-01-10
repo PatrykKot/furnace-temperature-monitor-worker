@@ -1,7 +1,7 @@
-package com.kotlarz.service.sensor
+package com.kotlarz.service.reader
 
 import com.kotlarz.application.AppSettings
-import com.kotlarz.service.domain.TemperatureLogDomain
+import com.kotlarz.service.cache.domain.TemperatureLogDomain
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.LongStream

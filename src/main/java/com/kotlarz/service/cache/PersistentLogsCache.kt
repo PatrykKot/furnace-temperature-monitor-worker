@@ -1,27 +1,22 @@
-package com.kotlarz.service.sender
+package com.kotlarz.service.cache
 
-import com.kotlarz.service.domain.TemperatureLogDomain
+import com.kotlarz.service.cache.domain.TemperatureLogDomain
+import com.kotlarz.service.database.Database
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dizitart.no2.FindOptions
 import org.dizitart.no2.objects.ObjectRepository
-import java.io.File
 
-class LogsCache {
+class PersistentLogsCache {
     companion object {
-        private val log: Logger = LogManager.getLogger(LogsCache::class.java)
-    }
-
-    private val database = org.dizitart.kno2.nitrite {
-        compress = true
-        file = File("database.db")
+        private val log: Logger = LogManager.getLogger(PersistentLogsCache::class.java)
     }
 
     private val repository: ObjectRepository<TemperatureLogDomain>
 
     init {
         log.info("Opening database")
-        repository = database.getRepository(TemperatureLogDomain::class.java)
+        repository = Database.instance.getRepository(TemperatureLogDomain::class.java)
 
         Runtime.getRuntime().addShutdownHook(Thread {
             log.info("Closing database")
@@ -39,7 +34,7 @@ class LogsCache {
     }
 
     fun delete(values: List<TemperatureLogDomain>) {
-        values.forEach({ repository.remove(it) })
+        values.forEach { repository.remove(it) }
     }
 
     fun size(): Long {

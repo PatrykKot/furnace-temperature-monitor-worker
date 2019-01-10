@@ -1,6 +1,7 @@
-package com.kotlarz.service.sender
+package com.kotlarz.service.queue
 
-import com.kotlarz.service.domain.TemperatureLogDomain
+import com.kotlarz.service.cache.PersistentLogsCache
+import com.kotlarz.service.cache.domain.TemperatureLogDomain
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.util.*
@@ -12,7 +13,7 @@ class LogsQueue {
 
     private val logs: MutableList<TemperatureLogDomain> = LinkedList()
 
-    private val cache: LogsCache = LogsCache()
+    private val cache: PersistentLogsCache = PersistentLogsCache()
 
     private val MAX_IN_MEMORY_LOGS = 10
 

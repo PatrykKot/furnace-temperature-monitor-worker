@@ -1,7 +1,10 @@
-package com.kotlarz.application
+package com.kotlarz
 
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.ParameterException
+import com.kotlarz.application.AppSettings
+import com.kotlarz.application.Application
+import com.kotlarz.application.Arguments
 
 object Main {
     @JvmStatic

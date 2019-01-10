@@ -1,6 +1,6 @@
-package com.kotlarz.service.dto
+package com.kotlarz.service.sender.all.dto
 
-import com.kotlarz.service.domain.TemperatureLogDomain
+import com.kotlarz.service.cache.domain.TemperatureLogDomain
 import java.util.*
 
 fun fromDomain(domain: TemperatureLogDomain): TemperatureLogDto {

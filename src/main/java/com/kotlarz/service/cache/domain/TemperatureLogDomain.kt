@@ -1,4 +1,4 @@
-package com.kotlarz.service.domain
+package com.kotlarz.service.cache.domain
 
 import org.dizitart.no2.objects.Id
 import java.util.*
