@@ -1,9 +1,10 @@
-package com.kotlarz.service.sender
+package com.kotlarz.service.sender.v1
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kotlarz.application.AppSettings
 import com.kotlarz.service.dto.TemperatureLog
+import com.kotlarz.service.sender.LogsQueue
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity

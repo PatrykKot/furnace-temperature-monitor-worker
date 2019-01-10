@@ -15,6 +15,12 @@ dependencies {
     // Apache HttpClient
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
 
+    // Spring Messaging
+    compile group: 'org.springframework', name: 'spring-messaging', version: '5.0.6.RELEASE'
+    compile group: 'org.springframework', name: 'spring-websocket', version: '5.0.6.RELEASE'
+
+    compile group: 'org.glassfish.tyrus.bundles', name: 'tyrus-standalone-client', version: '1.13.1'
+
     // JCommander
     compile group: 'com.beust', name: 'jcommander', version: '1.72'
 

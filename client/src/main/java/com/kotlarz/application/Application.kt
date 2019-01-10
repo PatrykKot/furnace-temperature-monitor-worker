@@ -1,6 +1,6 @@
 package com.kotlarz.application
 
-import com.kotlarz.service.sender.LogsSender
+import com.kotlarz.service.sender.v1.LogsSender
 import com.kotlarz.service.sensor.MockedTemperatureReader
 import com.kotlarz.service.sensor.RaspberryTemperatureReader
 import com.kotlarz.service.sensor.TemperatureReader
