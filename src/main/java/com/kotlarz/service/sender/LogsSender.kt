@@ -84,7 +84,11 @@ class LogsSender {
         val post = createPost(toSend, baseUrl)
 
         try {
-            client.execute(post)
+            val response = client.execute(post)
+            val statusCode = response.statusLine.statusCode
+            if (statusCode != 200) {
+                throw RuntimeException("""Server responded with error: ${response.statusLine}""")
+            }
         } finally {
             post.releaseConnection()
         }
@@ -104,6 +108,6 @@ class LogsSender {
     }
 
     private fun buildBaseUrl(): String {
-        return """http://${AppSettings.arguments.host}:${AppSettings.arguments.port}"""
+        return """http://${AppSettings.arguments.host}:${AppSettings.arguments.port}/furnace"""
     }
 }
