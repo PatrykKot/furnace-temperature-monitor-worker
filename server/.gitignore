@@ -1,7 +1,0 @@
-.gradle/
-out/
-.idea/
-build/
-
-*.db
-logs/

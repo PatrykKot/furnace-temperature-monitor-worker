@@ -1,0 +1,61 @@
+group 'com.kotlarz'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Pi4j
+    compile group: 'com.pi4j', name: 'pi4j-core', version: '1.1'
+    compile group: 'com.pi4j', name: 'pi4j-device', version: '1.1'
+
+    // Apache HttpClient
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.6'
+
+    // JCommander
+    compile group: 'com.beust', name: 'jcommander', version: '1.72'
+
+    // Jackson
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
+
+    // Nitrite
+    compile group: 'org.dizitart', name: 'potassium-nitrite', version: '3.1.0'
+
+    // Log4j
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.11.1'
+
+    // JUnit
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+buildscript {
+    ext.kotlin_version = '1.3.11'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.kotlarz.application.Main'
+    }
+
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
