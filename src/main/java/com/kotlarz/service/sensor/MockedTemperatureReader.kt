@@ -1,7 +1,7 @@
 package com.kotlarz.service.sensor
 
 import com.kotlarz.application.AppSettings
-import com.kotlarz.service.dto.TemperatureLog
+import com.kotlarz.service.domain.TemperatureLogDomain
 import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.LongStream
@@ -9,7 +9,7 @@ import java.util.stream.LongStream
 class MockedTemperatureReader : TemperatureReader {
     private val mockedAdresses = mutableListOf<String>()
 
-    override fun readAll(): List<TemperatureLog> {
+    override fun readAll(): List<TemperatureLogDomain> {
         while (mockedAdresses.size < AppSettings.arguments.mockedSensors) {
             mockedAdresses.add(UUID.randomUUID().toString())
         }
@@ -17,12 +17,12 @@ class MockedTemperatureReader : TemperatureReader {
         return LongStream.range(0, AppSettings.arguments.mockedSensors)
                 .boxed()
                 .map { index -> mock(mockedAdresses[index.toInt()]) }
-                .collect(Collectors.toList<TemperatureLog>())
+                .collect(Collectors.toList<TemperatureLogDomain>())
     }
 
     companion object {
-        fun mock(address: String): TemperatureLog {
-            return TemperatureLog(
+        fun mock(address: String): TemperatureLogDomain {
+            return TemperatureLogDomain(
                     value = generateRandomTemperature(),
                     date = Date(),
                     address = address)

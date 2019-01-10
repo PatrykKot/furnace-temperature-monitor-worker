@@ -1,6 +1,6 @@
 package com.kotlarz.service.sender
 
-import com.kotlarz.service.dto.TemperatureLog
+import com.kotlarz.service.domain.TemperatureLogDomain
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.dizitart.no2.FindOptions
@@ -17,11 +17,11 @@ class LogsCache {
         file = File("database.db")
     }
 
-    private val repository: ObjectRepository<TemperatureLog>
+    private val repository: ObjectRepository<TemperatureLogDomain>
 
     init {
         log.info("Opening database")
-        repository = database.getRepository(TemperatureLog::class.java)
+        repository = database.getRepository(TemperatureLogDomain::class.java)
 
         Runtime.getRuntime().addShutdownHook(Thread {
             log.info("Closing database")
@@ -29,16 +29,16 @@ class LogsCache {
         })
     }
 
-    fun insert(values: List<TemperatureLog>) {
+    fun insert(values: List<TemperatureLogDomain>) {
         repository.insert(values.toTypedArray())
     }
 
-    fun getLast(count: Int): List<TemperatureLog> {
+    fun getLast(count: Int): List<TemperatureLogDomain> {
         val options = FindOptions.limit(0, count)
         return repository.find(options).toList()
     }
 
-    fun delete(values: List<TemperatureLog>) {
+    fun delete(values: List<TemperatureLogDomain>) {
         values.forEach({ repository.remove(it) })
     }
 

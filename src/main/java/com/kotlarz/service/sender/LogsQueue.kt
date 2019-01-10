@@ -1,6 +1,6 @@
 package com.kotlarz.service.sender
 
-import com.kotlarz.service.dto.TemperatureLog
+import com.kotlarz.service.domain.TemperatureLogDomain
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.util.*
@@ -10,13 +10,13 @@ class LogsQueue {
         private val log: Logger = LogManager.getLogger(LogsQueue::class.java)
     }
 
-    private val logs: MutableList<TemperatureLog> = LinkedList()
+    private val logs: MutableList<TemperatureLogDomain> = LinkedList()
 
     private val cache: LogsCache = LogsCache()
 
     private val MAX_IN_MEMORY_LOGS = 10
 
-    fun insert(temperatureLog: List<TemperatureLog>) {
+    fun insert(temperatureLog: List<TemperatureLogDomain>) {
         synchronized(logs) {
             logs.addAll(temperatureLog)
 
@@ -29,23 +29,23 @@ class LogsQueue {
         }
     }
 
-    fun get(): List<TemperatureLog> {
+    fun get(): List<TemperatureLogDomain> {
         synchronized(logs) {
             return LinkedList(logs)
         }
     }
 
-    fun remove(toRemove: List<TemperatureLog>) {
+    fun remove(toRemove: List<TemperatureLogDomain>) {
         synchronized(logs) {
             logs.removeAll(toRemove)
         }
     }
 
-    fun fromCache(count: Int): List<TemperatureLog> {
+    fun fromCache(count: Int): List<TemperatureLogDomain> {
         return cache.getLast(count)
     }
 
-    fun removeInCache(values: List<TemperatureLog>) {
+    fun removeInCache(values: List<TemperatureLogDomain>) {
         cache.delete(values)
     }
 

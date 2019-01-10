@@ -3,7 +3,8 @@ package com.kotlarz.service.sender
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kotlarz.application.AppSettings
-import com.kotlarz.service.dto.TemperatureLog
+import com.kotlarz.service.domain.TemperatureLogDomain
+import com.kotlarz.service.dto.fromDomain
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
@@ -38,7 +39,7 @@ class LogsSender {
     private val MAX_LOGS_PER_REQUEST = 10000
 
     @Synchronized
-    operator fun invoke(temperatureLogs: List<TemperatureLog>) {
+    operator fun invoke(temperatureLogs: List<TemperatureLogDomain>) {
         queue.insert(temperatureLogs)
 
         if (!runner.isAlive) {
@@ -79,7 +80,7 @@ class LogsSender {
     }
 
     @Throws(IOException::class)
-    private fun send(toSend: List<TemperatureLog>) {
+    private fun send(toSend: List<TemperatureLogDomain>) {
         val baseUrl = buildBaseUrl()
         val post = createPost(toSend, baseUrl)
 
@@ -95,7 +96,7 @@ class LogsSender {
     }
 
     @Throws(UnsupportedEncodingException::class, JsonProcessingException::class)
-    private fun createPost(temperatureLogs: List<TemperatureLog>, baseUrl: String): HttpPost {
+    private fun createPost(temperatureLogs: List<TemperatureLogDomain>, baseUrl: String): HttpPost {
         val post = HttpPost("$baseUrl/temperatures")
         post.entity = createEntity(temperatureLogs)
         post.setHeader("Content-type", "application/json")
@@ -103,11 +104,12 @@ class LogsSender {
     }
 
     @Throws(UnsupportedEncodingException::class, JsonProcessingException::class)
-    private fun createEntity(temperatureLog: List<TemperatureLog>): StringEntity {
-        return StringEntity(mapper.writeValueAsString(temperatureLog))
+    private fun createEntity(temperatureLogs: List<TemperatureLogDomain>): StringEntity {
+        val temperatureLogDtos = temperatureLogs.map { domain -> fromDomain(domain) }
+        return StringEntity(mapper.writeValueAsString(temperatureLogDtos))
     }
 
     private fun buildBaseUrl(): String {
-        return """http://${AppSettings.arguments.host}:${AppSettings.arguments.port}/furnace"""
+        return """https://${AppSettings.arguments.host}:${AppSettings.arguments.port}/furnace"""
     }
 }

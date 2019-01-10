@@ -1,9 +1,9 @@
 package com.kotlarz.service.sensor
 
-import com.kotlarz.service.dto.TemperatureLog
+import com.kotlarz.service.domain.TemperatureLogDomain
 
 interface TemperatureReader {
-    fun readAll(): List<TemperatureLog>
+    fun readAll(): List<TemperatureLogDomain>
 
     fun refreshDevices()
 }
