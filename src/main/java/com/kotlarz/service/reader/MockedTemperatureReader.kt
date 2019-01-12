@@ -7,16 +7,16 @@ import java.util.stream.Collectors
 import java.util.stream.LongStream
 
 class MockedTemperatureReader : TemperatureReader {
-    private val mockedAdresses = mutableListOf<String>()
+    private val mockedAddresses = mutableListOf<String>()
 
     override fun readAll(): List<TemperatureLogDomain> {
-        while (mockedAdresses.size < AppSettings.arguments.mockedSensors) {
-            mockedAdresses.add(UUID.randomUUID().toString())
+        while (mockedAddresses.size < AppSettings.arguments.mockedSensors) {
+            mockedAddresses.add(UUID.randomUUID().toString())
         }
 
         return LongStream.range(0, AppSettings.arguments.mockedSensors)
                 .boxed()
-                .map { index -> mock(mockedAdresses[index.toInt()]) }
+                .map { index -> mock(mockedAddresses[index.toInt()]) }
                 .collect(Collectors.toList<TemperatureLogDomain>())
     }
 

@@ -2,16 +2,18 @@ package com.kotlarz.service.sender.all
 
 import com.kotlarz.service.cache.domain.TemperatureLogDomain
 import com.kotlarz.service.queue.LogsQueue
-import com.kotlarz.service.sender.LogsHttpSender
 import com.kotlarz.service.sender.LogsSender
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+
 
 class AllLogsSender : LogsSender {
     companion object {
         private val log: Logger = LogManager.getLogger(AllLogsSender::class.java)
 
         private const val MAX_LOGS_PER_REQUEST = 10000
+
+        private const val SLEEP_TIME_AFTER_ERROR_MS = 60000
     }
 
     private val queue: LogsQueue = LogsQueue()
@@ -56,6 +58,9 @@ class AllLogsSender : LogsSender {
             }
         } catch (ex: Exception) {
             log.error(ex.message)
+            log.info("Going sleep for $SLEEP_TIME_AFTER_ERROR_MS ms")
+            Thread.sleep(SLEEP_TIME_AFTER_ERROR_MS.toLong())
+            log.info("Waking up")
         }
     }
 }

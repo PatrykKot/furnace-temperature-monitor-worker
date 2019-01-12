@@ -1,4 +1,4 @@
-package com.kotlarz.service.sender
+package com.kotlarz.service.sender.all
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -28,8 +28,7 @@ class LogsHttpSender {
 
     @Throws(IOException::class)
     fun send(toSend: List<TemperatureLogDomain>) {
-        val baseUrl = buildBaseUrl()
-        val post = createPost(toSend, baseUrl)
+        val post = createPost(toSend, buildBaseUrl())
 
         try {
             val response = client.execute(post)
@@ -44,7 +43,7 @@ class LogsHttpSender {
 
     @Throws(UnsupportedEncodingException::class, JsonProcessingException::class)
     private fun createPost(temperatureLogs: List<TemperatureLogDomain>, baseUrl: String): HttpPost {
-        val post = HttpPost("$baseUrl/temperatures")
+        val post = HttpPost("$baseUrl/temperatures/uncompressed")
         post.entity = createEntity(temperatureLogs)
         post.setHeader("Content-type", "application/json")
         return post
@@ -57,6 +56,7 @@ class LogsHttpSender {
     }
 
     private fun buildBaseUrl(): String {
-        return """https://${AppSettings.arguments.host}:${AppSettings.arguments.port}/furnace"""
+        val protocol = if (AppSettings.arguments.ssl) "https" else "http"
+        return """$protocol://${AppSettings.arguments.host}:${AppSettings.arguments.port}/furnace"""
     }
 }

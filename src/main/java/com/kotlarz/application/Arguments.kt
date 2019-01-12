@@ -17,4 +17,7 @@ class Arguments {
 
     @Parameter(names = ["--mockedSensors"], description = "Number of mocked sensors", required = false)
     var mockedSensors: Long = 1
+
+    @Parameter(names = ["--ssl"], description = "Use HTTPS", required = false)
+    var ssl: Boolean = false
 }

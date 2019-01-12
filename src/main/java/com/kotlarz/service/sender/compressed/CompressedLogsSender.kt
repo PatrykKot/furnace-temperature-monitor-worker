@@ -2,7 +2,6 @@ package com.kotlarz.service.sender.compressed
 
 import com.kotlarz.service.cache.domain.TemperatureLogDomain
 import com.kotlarz.service.queue.LogsQueue
-import com.kotlarz.service.sender.LogsHttpSender
 import com.kotlarz.service.sender.LogsSender
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -17,8 +16,6 @@ class CompressedLogsSender : LogsSender {
     private val queue: LogsQueue = LogsQueue()
 
     private var runner: Thread = Thread()
-
-    private val httpSender: LogsHttpSender = LogsHttpSender()
 
     @Synchronized
     override fun send(logs: List<TemperatureLogDomain>) {
