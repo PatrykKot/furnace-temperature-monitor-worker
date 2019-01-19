@@ -1,6 +1,6 @@
 package com.kotlarz.application
 
-import com.kotlarz.service.reader.MockedTemperatureReader
+import com.kotlarz.service.reader.MockedPoznanTemperatureReader
 import com.kotlarz.service.reader.RaspberryTemperatureReader
 import com.kotlarz.service.reader.TemperatureReader
 import com.kotlarz.service.sender.LogsSender
@@ -15,7 +15,7 @@ object Application {
 
     fun start() {
         val sender = AllLogsSender()
-        val reader = if (!AppSettings.arguments.mocked) RaspberryTemperatureReader() else MockedTemperatureReader()
+        val reader = if (!AppSettings.arguments.mocked) RaspberryTemperatureReader() else MockedPoznanTemperatureReader()
 
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate({ cycle(sender, reader) },
                 0, AppSettings.arguments.period, TimeUnit.SECONDS)
