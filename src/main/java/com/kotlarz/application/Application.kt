@@ -36,7 +36,7 @@ object Application {
             } else {
                 log.info("No temperature logs found")
             }
-        } catch (ex: Exception) {
+        } catch (ex: Throwable) {
             log.error(ex.message, ex)
         }
     }
