@@ -2,30 +2,27 @@ package com.kotlarz.service.queue
 
 import com.kotlarz.service.cache.PersistentLogsCache
 import com.kotlarz.service.cache.domain.TemperatureLogDomain
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import mu.KotlinLogging
 import java.util.*
 
-class LogsQueue {
-    companion object {
-        private val log: Logger = LogManager.getLogger(LogsQueue::class.java)
-    }
+private val logger = KotlinLogging.logger { }
 
+private val MAX_IN_MEMORY_LOGS = 10
+
+class LogsQueue {
     private val logs: MutableList<TemperatureLogDomain> = LinkedList()
 
     private val cache: PersistentLogsCache = PersistentLogsCache()
-
-    private val MAX_IN_MEMORY_LOGS = 10
 
     fun insert(temperatureLog: List<TemperatureLogDomain>) {
         synchronized(logs) {
             logs.addAll(temperatureLog)
 
             if (logs.size >= MAX_IN_MEMORY_LOGS) {
-                log.info("""Filling in disk cache with ${logs.size}""")
+                logger.info { "Filling in disk cache with ${logs.size}" }
                 cache.insert(logs)
                 logs.clear()
-                log.info("""Saved on disk ${cache.size()}""")
+                logger.info { "Saved on disk ${cache.size()}" }
             }
         }
     }

@@ -1,0 +1,32 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:11-jdk
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - gradle-{{ checksum "build.gradle" }}
+      - run:
+          name: Building jar
+          command: |
+            ./gradlew build
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: gradle-{{ checksum "build.gradle" }}
+      - run:
+          name: Building docker images
+          command: |
+            docker build -t com.kotlarz/furnace-worker .
+      - run:
+          name: Pushing docker images
+          command: |
+            docker login -u $DOCKER_HUB_USER_ID -p $DOCKER_HUB_PWD
+            docker tag com.kotlarz/furnace-worker $DOCKER_HUB_USER_ID/furnace-temperature-monitor-worker:$CIRCLE_SHA1
+            docker tag com.kotlarz/furnace-worker $DOCKER_HUB_USER_ID/furnace-temperature-monitor-worker:latest
+            docker push $DOCKER_HUB_USER_ID/furnace-temperature-monitor-worker:$CIRCLE_SHA1
+            docker push $DOCKER_HUB_USER_ID/furnace-temperature-monitor-worker:latest

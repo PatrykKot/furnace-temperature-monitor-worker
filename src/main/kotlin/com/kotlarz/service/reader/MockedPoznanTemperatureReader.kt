@@ -10,13 +10,11 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.*
 
+private val API_KEY = "d81f166b649b2111aab1da73f09c2307"
+
+private val SENSOR_ID = "poznan"
+
 class MockedPoznanTemperatureReader : TemperatureReader {
-    companion object {
-        private val API_KEY = "d81f166b649b2111aab1da73f09c2307"
-
-        private val SENSOR_ID = "poznan"
-    }
-
     private val client: CloseableHttpClient = HttpClientBuilder
             .create()
             .build()

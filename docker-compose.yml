@@ -1,0 +1,17 @@
+version: '3'
+services:
+
+  furnace-worker:
+    container_name: furnace-worker
+    image: patrykkot/furnace-temperature-monitor-worker
+    environment:
+      - HOST=localhost
+      - PORT=1234
+    volumes:
+      - logs:/logs
+      - db:/db
+    restart: always
+
+volumes:
+  logs:
+  db:

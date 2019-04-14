@@ -16,7 +16,7 @@ class MockedTemperatureReader : TemperatureReader {
 
         return LongStream.range(0, AppSettings.arguments.mockedSensors)
                 .boxed()
-                .map { index -> mock(mockedAddresses[index.toInt()]) }
+                .map { mock(mockedAddresses[it.toInt()]) }
                 .collect(Collectors.toList<TemperatureLogDomain>())
     }
 

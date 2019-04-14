@@ -3,24 +3,20 @@ package com.kotlarz.service.sender.all
 import com.kotlarz.service.cache.domain.TemperatureLogDomain
 import com.kotlarz.service.queue.LogsQueue
 import com.kotlarz.service.sender.LogsSender
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import mu.KotlinLogging
 
+private val logger = KotlinLogging.logger { }
+
+private const val MAX_LOGS_PER_REQUEST = 10000
+
+private const val SLEEP_TIME_AFTER_ERROR_MS = 60000
 
 class AllLogsSender : LogsSender {
-    companion object {
-        private val log: Logger = LogManager.getLogger(AllLogsSender::class.java)
+    private val queue = LogsQueue()
 
-        private const val MAX_LOGS_PER_REQUEST = 10000
+    private var runner = Thread()
 
-        private const val SLEEP_TIME_AFTER_ERROR_MS = 60000
-    }
-
-    private val queue: LogsQueue = LogsQueue()
-
-    private var runner: Thread = Thread()
-
-    private val httpSender: LogsHttpSender = LogsHttpSender()
+    private val httpSender = LogsHttpSender()
 
     @Synchronized
     override fun send(logs: List<TemperatureLogDomain>) {
@@ -28,7 +24,7 @@ class AllLogsSender : LogsSender {
 
         if (!runner.isAlive) {
             runner = Thread {
-                log.info("Invoking sender")
+                logger.info("Invoking sender")
                 call()
             }
             runner.start()
@@ -38,29 +34,29 @@ class AllLogsSender : LogsSender {
     private fun call() {
         try {
             val toSend = queue.get()
-            log.info("""Sending ${toSend.size} logs""")
+            logger.info("""Sending ${toSend.size} logs""")
 
             httpSender.send(toSend)
-            log.info("Sending success")
+            logger.info("Sending success")
             queue.remove(toSend)
 
             while (true) {
                 val fromCache = queue.fromCache(MAX_LOGS_PER_REQUEST)
                 if (fromCache.isNotEmpty()) {
-                    log.info("Cached logs to send: " + queue.inCache())
-                    log.info("""Sending logs from cache. Size ${fromCache.size}""")
+                    logger.info("Cached logs to send: " + queue.inCache())
+                    logger.info("""Sending logs from cache. Size ${fromCache.size}""")
                     httpSender.send(fromCache)
-                    log.info("Sending cached logs success")
+                    logger.info("Sending cached logs success")
                     queue.removeInCache(fromCache)
                 } else {
                     break
                 }
             }
         } catch (ex: Exception) {
-            log.error(ex.message)
-            log.info("Going sleep for $SLEEP_TIME_AFTER_ERROR_MS ms")
+            logger.error(ex.message)
+            logger.info { "Going sleep for $SLEEP_TIME_AFTER_ERROR_MS ms" }
             Thread.sleep(SLEEP_TIME_AFTER_ERROR_MS.toLong())
-            log.info("Waking up")
+            logger.info { "Waking up" }
         }
     }
 }

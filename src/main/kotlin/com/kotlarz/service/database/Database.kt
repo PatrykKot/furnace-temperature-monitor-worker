@@ -5,6 +5,6 @@ import java.io.File
 object Database {
     val instance = org.dizitart.kno2.nitrite {
         compress = true
-        file = File("database.db")
+        file = File("db/database.db")
     }
 }
